@@ -2,6 +2,15 @@ import React from 'react'
 
 import Cta from '@/app/components/Cta'
 import Info from '@/app/components/InfoSection'
+import Hero from '@/app/components/blocks/Hero'
+import ServicesAccordion from '@/app/components/blocks/ServicesAccordion'
+import StatsBar from '@/app/components/blocks/StatsBar'
+import SplitFeature from '@/app/components/blocks/SplitFeature'
+import FeatureGrid from '@/app/components/blocks/FeatureGrid'
+import TestimonialCarousel from '@/app/components/blocks/TestimonialCarousel'
+import CTABanner from '@/app/components/blocks/CTABanner'
+import TwoColumnSection from '@/app/components/blocks/TwoColumnSection'
+import FAQAccordion from '@/app/components/blocks/FAQAccordion'
 import {dataAttr} from '@/sanity/lib/utils'
 import {PageBuilderSection} from '@/sanity/lib/types'
 
@@ -19,13 +28,18 @@ type BlocksType = {
 const Blocks = {
   callToAction: Cta,
   infoSection: Info,
+  hero: Hero,
+  servicesAccordion: ServicesAccordion,
+  statsBar: StatsBar,
+  splitFeature: SplitFeature,
+  featureGrid: FeatureGrid,
+  testimonialCarousel: TestimonialCarousel,
+  ctaBanner: CTABanner,
+  twoColumnSection: TwoColumnSection,
+  faqAccordion: FAQAccordion,
 } as BlocksType
 
-/**
- * Used by the <PageBuilder>, this component renders a the component that matches the block type.
- */
 export default function BlockRenderer({block, index, pageId, pageType}: BlockProps) {
-  // Block does exist
   if (typeof Blocks[block._type] !== 'undefined') {
     return (
       <div
@@ -46,10 +60,9 @@ export default function BlockRenderer({block, index, pageId, pageType}: BlockPro
       </div>
     )
   }
-  // Block doesn't exist yet
   return React.createElement(
     () => (
-      <div className="w-full bg-gray-100 text-center text-gray-500 p-20 rounded">
+      <div className="w-full bg-brand-cream text-center text-text-secondary p-20 rounded-[12px]">
         A &ldquo;{block._type}&rdquo; block hasn&apos;t been created
       </div>
     ),

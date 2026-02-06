@@ -13,6 +13,181 @@
  */
 
 // Source: ../sanity.schema.json
+export type LeftColumn = {
+  sectionLabel?: string
+  headline?: string
+  body?: string
+  socialLinks?: Array<{
+    platform?: 'instagram' | 'twitter' | 'facebook' | 'tiktok'
+    url?: string
+    _key: string
+  }>
+  image?: LeftColumnImage
+}
+
+export type RightColumn = {
+  sectionLabel?: string
+  headline?: string
+  body?: string
+  cta?: Button
+  image?: RightColumnImage
+}
+
+export type SanityImageAssetReference = {
+  _ref: string
+  _type: 'reference'
+  _weak?: boolean
+  [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
+}
+
+export type ObjectImage = {
+  asset?: SanityImageAssetReference
+  media?: unknown // Unable to locate the referenced type "object.image.media" in schema
+  hotspot?: SanityImageHotspot
+  crop?: SanityImageCrop
+  _type: 'image'
+}
+
+export type LeftColumnImage = {
+  asset?: SanityImageAssetReference
+  media?: unknown // Unable to locate the referenced type "leftColumn.image.media" in schema
+  hotspot?: SanityImageHotspot
+  crop?: SanityImageCrop
+  _type: 'image'
+}
+
+export type RightColumnImage = {
+  asset?: SanityImageAssetReference
+  media?: unknown // Unable to locate the referenced type "rightColumn.image.media" in schema
+  hotspot?: SanityImageHotspot
+  crop?: SanityImageCrop
+  _type: 'image'
+}
+
+export type FaqReference = {
+  _ref: string
+  _type: 'reference'
+  _weak?: boolean
+  [internalGroqTypeReferenceTo]?: 'faq'
+}
+
+export type FaqAccordion = {
+  _type: 'faqAccordion'
+  sectionLabel?: string
+  headline: string
+  faqs: Array<
+    {
+      _key: string
+    } & FaqReference
+  >
+}
+
+export type TwoColumnSection = {
+  _type: 'twoColumnSection'
+  leftColumn?: LeftColumn
+  rightColumn?: RightColumn
+}
+
+export type CtaBanner = {
+  _type: 'ctaBanner'
+  sectionLabel?: string
+  headline: string
+  cta?: Button
+  image?: {
+    asset?: SanityImageAssetReference
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    _type: 'image'
+  }
+  backgroundColor?: 'cream' | 'blue' | 'brown'
+}
+
+export type TestimonialReference = {
+  _ref: string
+  _type: 'reference'
+  _weak?: boolean
+  [internalGroqTypeReferenceTo]?: 'testimonial'
+}
+
+export type TestimonialCarousel = {
+  _type: 'testimonialCarousel'
+  sectionLabel?: string
+  headline: string
+  testimonials: Array<
+    {
+      _key: string
+    } & TestimonialReference
+  >
+}
+
+export type FeatureGrid = {
+  _type: 'featureGrid'
+  features: Array<{
+    title: string
+    description?: string
+    icon?: string
+    _key: string
+  }>
+  columns?: 2 | 3
+}
+
+export type SplitFeature = {
+  _type: 'splitFeature'
+  sectionLabel?: string
+  headline: string
+  body?: BlockContentTextOnly
+  image: {
+    asset?: SanityImageAssetReference
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    _type: 'image'
+  }
+  imagePosition?: 'left' | 'right'
+  cta?: Button
+}
+
+export type StatsBar = {
+  _type: 'statsBar'
+  stats: Array<{
+    value: string
+    label: string
+    showStars?: boolean
+    starCount?: number
+    _key: string
+  }>
+}
+
+export type ServicesAccordion = {
+  _type: 'servicesAccordion'
+  sectionLabel?: string
+  headline: string
+  services: Array<{
+    title: string
+    description?: string
+    image?: ObjectImage
+    cta?: Button
+    _key: string
+  }>
+  defaultOpen?: number
+}
+
+export type Hero = {
+  _type: 'hero'
+  headline: string
+  subtext?: string
+  backgroundImage: {
+    asset?: SanityImageAssetReference
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    _type: 'image'
+  }
+  cta?: Button
+  overlay?: 'none' | 'light' | 'dark'
+}
+
 export type PageReference = {
   _ref: string
   _type: 'reference'
@@ -34,13 +209,6 @@ export type Link = {
   page?: PageReference
   post?: PostReference
   openInNewTab?: boolean
-}
-
-export type SanityImageAssetReference = {
-  _ref: string
-  _type: 'reference'
-  _weak?: boolean
-  [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
 }
 
 export type CallToAction = {
@@ -125,6 +293,27 @@ export type Button = {
   link?: Link
 }
 
+export type Faq = {
+  _id: string
+  _type: 'faq'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  question: string
+  answer: BlockContentTextOnly
+}
+
+export type Testimonial = {
+  _id: string
+  _type: 'testimonial'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  quote: string
+  authorName: string
+  authorDescription?: string
+}
+
 export type Settings = {
   _id: string
   _type: 'settings'
@@ -189,9 +378,36 @@ export type Page = {
   _rev: string
   name: string
   slug: Slug
-  heading: string
+  heading?: string
   subheading?: string
   pageBuilder?: Array<
+    | ({
+        _key: string
+      } & Hero)
+    | ({
+        _key: string
+      } & ServicesAccordion)
+    | ({
+        _key: string
+      } & StatsBar)
+    | ({
+        _key: string
+      } & SplitFeature)
+    | ({
+        _key: string
+      } & FeatureGrid)
+    | ({
+        _key: string
+      } & TestimonialCarousel)
+    | ({
+        _key: string
+      } & CtaBanner)
+    | ({
+        _key: string
+      } & TwoColumnSection)
+    | ({
+        _key: string
+      } & FaqAccordion)
     | ({
         _key: string
       } & CallToAction)
@@ -488,15 +704,33 @@ export type Geopoint = {
 }
 
 export type AllSanitySchemaTypes =
+  | LeftColumn
+  | RightColumn
+  | SanityImageAssetReference
+  | ObjectImage
+  | LeftColumnImage
+  | RightColumnImage
+  | FaqReference
+  | FaqAccordion
+  | TwoColumnSection
+  | CtaBanner
+  | TestimonialReference
+  | TestimonialCarousel
+  | FeatureGrid
+  | SplitFeature
+  | StatsBar
+  | ServicesAccordion
+  | Hero
   | PageReference
   | PostReference
   | Link
-  | SanityImageAssetReference
   | CallToAction
   | InfoSection
   | BlockContentTextOnly
   | BlockContent
   | Button
+  | Faq
+  | Testimonial
   | Settings
   | SanityImageCrop
   | SanityImageHotspot

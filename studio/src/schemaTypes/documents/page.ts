@@ -1,11 +1,6 @@
 import {defineField, defineType} from 'sanity'
 import {DocumentIcon} from '@sanity/icons'
 
-/**
- * Page schema.  Define and edit the fields for the 'page' content type.
- * Learn more: https://www.sanity.io/docs/studio/schema-types
- */
-
 export const page = defineType({
   name: 'page',
   title: 'Page',
@@ -18,7 +13,6 @@ export const page = defineType({
       type: 'string',
       validation: (Rule) => Rule.required(),
     }),
-
     defineField({
       name: 'slug',
       title: 'Slug',
@@ -33,7 +27,6 @@ export const page = defineType({
       name: 'heading',
       title: 'Heading',
       type: 'string',
-      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'subheading',
@@ -44,10 +37,21 @@ export const page = defineType({
       name: 'pageBuilder',
       title: 'Page builder',
       type: 'array',
-      of: [{type: 'callToAction'}, {type: 'infoSection'}],
+      of: [
+        {type: 'hero'},
+        {type: 'servicesAccordion'},
+        {type: 'statsBar'},
+        {type: 'splitFeature'},
+        {type: 'featureGrid'},
+        {type: 'testimonialCarousel'},
+        {type: 'ctaBanner'},
+        {type: 'twoColumnSection'},
+        {type: 'faqAccordion'},
+        {type: 'callToAction'},
+        {type: 'infoSection'},
+      ],
       options: {
         insertMenu: {
-          // Configure the "Add Item" menu to display a thumbnail preview of the content type. https://www.sanity.io/docs/studio/array-type#efb1fe03459d
           views: [
             {
               name: 'grid',

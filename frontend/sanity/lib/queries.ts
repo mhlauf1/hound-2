@@ -27,6 +27,20 @@ const linkFields = /* groq */ `
       }
 `
 
+const buttonFields = /* groq */ `
+  button {
+    ...,
+    ${linkFields}
+  }
+`
+
+const ctaButtonFields = /* groq */ `
+  cta {
+    ...,
+    ${linkFields}
+  }
+`
+
 export const getPageQuery = defineQuery(`
   *[_type == 'page' && slug.current == $slug][0]{
     _id,
@@ -39,10 +53,7 @@ export const getPageQuery = defineQuery(`
       ...,
       _type == "callToAction" => {
         ...,
-        button {
-          ...,
-          ${linkFields}
-        }
+        ${buttonFields}
       },
       _type == "infoSection" => {
         content[]{
@@ -51,6 +62,55 @@ export const getPageQuery = defineQuery(`
             ...,
             ${linkReference}
           }
+        }
+      },
+      _type == "hero" => {
+        ...,
+        ${ctaButtonFields}
+      },
+      _type == "servicesAccordion" => {
+        ...,
+        services[]{
+          ...,
+          ${ctaButtonFields}
+        }
+      },
+      _type == "statsBar" => {
+        ...
+      },
+      _type == "splitFeature" => {
+        ...,
+        ${ctaButtonFields}
+      },
+      _type == "featureGrid" => {
+        ...
+      },
+      _type == "testimonialCarousel" => {
+        ...,
+        testimonials[]->{
+          _id,
+          quote,
+          authorName,
+          authorDescription
+        }
+      },
+      _type == "ctaBanner" => {
+        ...,
+        ${ctaButtonFields}
+      },
+      _type == "twoColumnSection" => {
+        ...,
+        rightColumn {
+          ...,
+          ${ctaButtonFields}
+        }
+      },
+      _type == "faqAccordion" => {
+        ...,
+        faqs[]->{
+          _id,
+          question,
+          answer
         }
       },
     },
