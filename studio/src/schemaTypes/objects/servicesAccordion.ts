@@ -1,11 +1,11 @@
 import {defineField, defineType, defineArrayMember} from 'sanity'
-import {ThListIcon} from '@sanity/icons'
+import {ThLargeIcon} from '@sanity/icons'
 
 export const servicesAccordion = defineType({
   name: 'servicesAccordion',
-  title: 'Services Accordion',
+  title: 'Services Cards',
   type: 'object',
-  icon: ThListIcon,
+  icon: ThLargeIcon,
   fields: [
     defineField({
       name: 'sectionLabel',
@@ -25,38 +25,8 @@ export const servicesAccordion = defineType({
       type: 'array',
       of: [
         defineArrayMember({
-          type: 'object',
-          fields: [
-            defineField({
-              name: 'title',
-              title: 'Title',
-              type: 'string',
-              validation: (Rule) => Rule.required(),
-            }),
-            defineField({
-              name: 'description',
-              title: 'Description',
-              type: 'text',
-              rows: 3,
-            }),
-            defineField({
-              name: 'image',
-              title: 'Image',
-              type: 'image',
-              options: {hotspot: true},
-            }),
-            defineField({
-              name: 'cta',
-              title: 'Call to Action',
-              type: 'button',
-            }),
-          ],
-          preview: {
-            select: {
-              title: 'title',
-              media: 'image',
-            },
-          },
+          type: 'reference',
+          to: [{type: 'service'}],
         }),
       ],
       validation: (Rule) => Rule.required().min(1),
@@ -67,6 +37,7 @@ export const servicesAccordion = defineType({
       type: 'number',
       initialValue: 0,
       description: 'Which service item is expanded by default (0 = first)',
+      hidden: true,
     }),
   ],
   preview: {
@@ -75,8 +46,8 @@ export const servicesAccordion = defineType({
     },
     prepare({title}) {
       return {
-        title: title || 'Services Accordion',
-        subtitle: 'Services Accordion',
+        title: title || 'Services Cards',
+        subtitle: 'Services Cards',
       }
     },
   },

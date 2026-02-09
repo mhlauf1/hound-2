@@ -127,6 +127,7 @@ export type FeatureGrid = {
     title: string
     description?: string
     icon?: string
+    image?: ObjectImage
     _key: string
   }>
   columns?: 2 | 3
@@ -159,17 +160,22 @@ export type StatsBar = {
   }>
 }
 
+export type ServiceReference = {
+  _ref: string
+  _type: 'reference'
+  _weak?: boolean
+  [internalGroqTypeReferenceTo]?: 'service'
+}
+
 export type ServicesAccordion = {
   _type: 'servicesAccordion'
   sectionLabel?: string
   headline: string
-  services: Array<{
-    title: string
-    description?: string
-    image?: ObjectImage
-    cta?: Button
-    _key: string
-  }>
+  services: Array<
+    {
+      _key: string
+    } & ServiceReference
+  >
   defaultOpen?: number
 }
 
@@ -204,10 +210,11 @@ export type PostReference = {
 
 export type Link = {
   _type: 'link'
-  linkType?: 'href' | 'page' | 'post'
+  linkType?: 'href' | 'page' | 'post' | 'service'
   href?: string
   page?: PageReference
   post?: PostReference
+  service?: ServiceReference
   openInNewTab?: boolean
 }
 
@@ -314,6 +321,84 @@ export type Testimonial = {
   authorDescription?: string
 }
 
+export type Service = {
+  _id: string
+  _type: 'service'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  title: string
+  slug: Slug
+  excerpt?: string
+  priceLabel?: string
+  cta?: Button
+  coverImage?: {
+    asset?: SanityImageAssetReference
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    alt?: string
+    _type: 'image'
+  }
+  pageBuilder?: Array<
+    | ({
+        _key: string
+      } & Hero)
+    | ({
+        _key: string
+      } & ServicesAccordion)
+    | ({
+        _key: string
+      } & StatsBar)
+    | ({
+        _key: string
+      } & SplitFeature)
+    | ({
+        _key: string
+      } & FeatureGrid)
+    | ({
+        _key: string
+      } & TestimonialCarousel)
+    | ({
+        _key: string
+      } & CtaBanner)
+    | ({
+        _key: string
+      } & TwoColumnSection)
+    | ({
+        _key: string
+      } & FaqAccordion)
+    | ({
+        _key: string
+      } & CallToAction)
+    | ({
+        _key: string
+      } & InfoSection)
+  >
+}
+
+export type SanityImageCrop = {
+  _type: 'sanity.imageCrop'
+  top: number
+  bottom: number
+  left: number
+  right: number
+}
+
+export type SanityImageHotspot = {
+  _type: 'sanity.imageHotspot'
+  x: number
+  y: number
+  height: number
+  width: number
+}
+
+export type Slug = {
+  _type: 'slug'
+  current: string
+  source?: string
+}
+
 export type Settings = {
   _id: string
   _type: 'settings'
@@ -352,22 +437,6 @@ export type Settings = {
     metadataBase?: string
     _type: 'image'
   }
-}
-
-export type SanityImageCrop = {
-  _type: 'sanity.imageCrop'
-  top: number
-  bottom: number
-  left: number
-  right: number
-}
-
-export type SanityImageHotspot = {
-  _type: 'sanity.imageHotspot'
-  x: number
-  y: number
-  height: number
-  width: number
 }
 
 export type Page = {
@@ -462,12 +531,6 @@ export type Person = {
     alt?: string
     _type: 'image'
   }
-}
-
-export type Slug = {
-  _type: 'slug'
-  current: string
-  source?: string
 }
 
 export type SanityAssistInstructionTask = {
@@ -719,6 +782,7 @@ export type AllSanitySchemaTypes =
   | FeatureGrid
   | SplitFeature
   | StatsBar
+  | ServiceReference
   | ServicesAccordion
   | Hero
   | PageReference
@@ -731,14 +795,15 @@ export type AllSanitySchemaTypes =
   | Button
   | Faq
   | Testimonial
-  | Settings
+  | Service
   | SanityImageCrop
   | SanityImageHotspot
+  | Slug
+  | Settings
   | Page
   | PersonReference
   | Post
   | Person
-  | Slug
   | SanityAssistInstructionTask
   | SanityAssistTaskStatus
   | SanityAssistSchemaTypeAnnotations

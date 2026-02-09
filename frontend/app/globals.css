@@ -6,23 +6,23 @@
 
 @theme {
   /* Brand Colors */
-  --color-brand-cream: #F5F0E3;
-  --color-brand-blue: #8BABE5;
-  --color-brand-blue-light: #A8C1ED;
-  --color-brand-blue-dark: #6B8FD4;
-  --color-brand-brown: #341D04;
-  --color-brand-white: #FFFFFF;
+  --color-brand-cream: #f5f0e3;
+  --color-brand-blue: #8babe5;
+  --color-brand-blue-light: #a8c1ed;
+  --color-brand-blue-dark: #6b8fd4;
+  --color-brand-brown: #341d04;
+  --color-brand-white: #ffffff;
 
   /* Semantic Text Colors */
-  --color-text-primary: #341D04;
+  --color-text-primary: #341d04;
   --color-text-secondary: rgba(52, 29, 4, 0.7);
-  --color-text-inverse: #FFFFFF;
+  --color-text-inverse: #ffffff;
   --color-text-inverse-muted: rgba(255, 255, 255, 0.8);
 
   /* Semantic Border Colors */
   --color-border-default: rgba(52, 29, 4, 0.15);
   --color-border-medium: rgba(52, 29, 4, 0.25);
-  --color-border-dark: #341D04;
+  --color-border-dark: #341d04;
 
   /* Font Families */
   --font-serif: var(--font-libre-caslon), 'Libre Caslon Text', Georgia, 'Times New Roman', serif;
@@ -51,7 +51,7 @@
   --duration-slower: 600ms;
 
   /* Container Max Widths */
-  --max-width-content: 1280px;
+  --max-width-content: 1600px;
   --max-width-narrow: 800px;
   --max-width-wide: 1440px;
 

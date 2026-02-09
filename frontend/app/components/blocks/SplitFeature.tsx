@@ -23,12 +23,12 @@ export default function SplitFeature({block}: SplitFeatureProps) {
     <div className="flex flex-col justify-center">
       {sectionLabel && <SectionLabel>{sectionLabel}</SectionLabel>}
       {headline && (
-        <h2 className="text-4xl lg:text-5xl xl:text-[64px] font-serif font-normal text-text-primary leading-[0.9] tracking-tight mb-6">
+        <h2 className="text-4xl mt-2 lg:text-5xl xl:text-[64px] font-serif font-normal text-text-primary leading-[1.1] tracking-tight mb-6">
           {headline}
         </h2>
       )}
       {body && (
-        <div className="text-lg lg:text-xl font-sans font-light text-text-secondary leading-relaxed mb-6 prose prose-lg max-w-none">
+        <div className="text-lg lg:text-lg font-sans text-text-secondary leading-relaxed mb-6 prose prose-lg max-w-[85%]">
           <PortableText value={body} />
         </div>
       )}
@@ -48,7 +48,7 @@ export default function SplitFeature({block}: SplitFeatureProps) {
         id={image._id || image.asset?._ref}
         hotspot={image.hotspot}
         crop={image.crop}
-        className="w-full h-full object-cover rounded-[12px]"
+        className="w-full h-full object-cover rounded-lg"
         alt={headline || ''}
         width={640}
         queryParams={{q: 80}}

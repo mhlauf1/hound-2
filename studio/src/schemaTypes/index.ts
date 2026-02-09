@@ -1,6 +1,7 @@
 import {person} from './documents/person'
 import {page} from './documents/page'
 import {post} from './documents/post'
+import {service} from './documents/service'
 import {testimonial} from './documents/testimonial'
 import {faq} from './documents/faq'
 import {callToAction} from './objects/callToAction'
@@ -26,6 +27,7 @@ export const schemaTypes = [
   // Documents
   page,
   post,
+  service,
   person,
   testimonial,
   faq,

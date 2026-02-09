@@ -13,9 +13,9 @@ interface CircleIconButtonProps {
 }
 
 const iconMap = {
-  plus: 'mdi:plus',
+  'plus': 'mdi:plus',
   'arrow-right': 'mdi:arrow-right',
-  close: 'mdi:close',
+  'close': 'mdi:close',
 }
 
 export default function CircleIconButton({
@@ -27,8 +27,8 @@ export default function CircleIconButton({
   className = '',
   as = 'button',
 }: CircleIconButtonProps) {
-  const sizeClass = size === 'sm' ? 'w-7 h-7' : 'w-9 h-9'
-  const iconSize = size === 'sm' ? 14 : 16
+  const sizeClass = size === 'sm' ? 'size-6' : 'size-8'
+  const iconSize = size === 'sm' ? 18 : 20
 
   const bgClass =
     variant === 'blue'

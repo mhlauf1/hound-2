@@ -28,15 +28,13 @@ export default function CTABanner({block}: CTABannerProps) {
     <section className={`${bgMap[backgroundColor] || bgMap.blue}`}>
       <div className="container py-section-lg">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          <div>
+          <div className="flex flex-col items-center">
             {sectionLabel && (
-              <SectionLabel variant={isLight ? 'onCream' : 'onBlue'}>
-                {sectionLabel}
-              </SectionLabel>
+              <SectionLabel variant={isLight ? 'onCream' : 'onBlue'}>{sectionLabel}</SectionLabel>
             )}
             {headline && (
               <h2
-                className={`text-4xl lg:text-5xl xl:text-[64px] font-serif font-normal leading-[0.95] tracking-tight mb-8 ${
+                className={`text-4xl lg:text-5xl xl:text-6xl mt-3 font-serif font-normal leading-[1.1] text-center tracking-tight mb-8 ${
                   isLight ? 'text-text-primary' : 'text-text-inverse'
                 }`}
               >
@@ -44,11 +42,7 @@ export default function CTABanner({block}: CTABannerProps) {
               </h2>
             )}
             {cta?.buttonText && ctaHref && (
-              <Button
-                href={ctaHref}
-                variant="textArrow"
-                className={isLight ? 'text-text-primary' : 'text-text-inverse'}
-              >
+              <Button href={ctaHref} variant="inverse">
                 {cta.buttonText}
               </Button>
             )}

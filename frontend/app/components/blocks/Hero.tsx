@@ -25,7 +25,7 @@ export default function Hero({block}: HeroProps) {
   const ctaHref = cta?.link ? linkResolver(cta.link) : null
 
   return (
-    <section className="relative w-full min-h-[85vh] lg:min-h-screen flex items-end">
+    <section className="relative w-full min-h-[85vh] lg:min-h-[85vh] flex items-center">
       {backgroundImage && (
         <Image
           id={backgroundImage._id || backgroundImage.asset?._ref}
@@ -33,22 +33,23 @@ export default function Hero({block}: HeroProps) {
           crop={backgroundImage.crop}
           className="absolute inset-0 w-full h-full object-cover"
           alt={headline || ''}
-          width={1920}
-          queryParams={{q: 80}}
+          width={2400}
+          sizes="100vw"
+          queryParams={{q: 100}}
         />
       )}
 
-      {overlayClass && <div className={`absolute inset-0 ${overlayClass}`} />}
+      {/* {overlayClass && <div className={`absolute inset-0 ${overlayClass}`} />} */}
 
       <div className="relative container pb-16 lg:pb-24">
-        <div className="max-w-xl lg:max-w-2xl">
+        <div className="max-w-xl flex flex-col items-center pt-[7vh] lg:max-w-2xl">
           {headline && (
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl xl:text-[84px] font-serif font-normal text-text-inverse leading-[0.9] tracking-tight mb-6">
+            <h1 className="text-5xl sm:text-6xl md:text-7xl font-serif text-center font-normal text-text-inverse leading-[1.1] tracking-tight mb-6">
               {headline}
             </h1>
           )}
           {subtext && (
-            <p className="text-lg lg:text-2xl font-sans font-light text-text-inverse leading-relaxed mb-8 max-w-md">
+            <p className="text-lg lg:text-xl text-center font-sans font-normal md:max-w-xl text-text-inverse leading-relaxed mb-8 ">
               {subtext}
             </p>
           )}

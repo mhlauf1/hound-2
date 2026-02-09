@@ -34,6 +34,13 @@ export const featureGrid = defineType({
               type: 'string',
               description: 'Optional Iconify icon name (e.g. "mdi:webcam")',
             }),
+            defineField({
+              name: 'image',
+              title: 'Image',
+              type: 'image',
+              options: {hotspot: true},
+              description: 'Optional image displayed above the title',
+            }),
           ],
           preview: {
             select: {

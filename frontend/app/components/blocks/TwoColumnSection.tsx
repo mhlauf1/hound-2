@@ -44,27 +44,26 @@ export default function TwoColumnSection({block}: TwoColumnSectionProps) {
   const ctaHref = rightColumn?.cta?.link ? linkResolver(rightColumn.cta.link) : null
 
   return (
-    <section className="py-section">
-      <div className="container">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
-          {/* Left — Social */}
+    <section className="overflow-hidden">
+      {/* 2x3 grid: left-text | divider | right-text on top row, left-image | divider | right-image on bottom */}
+      <div className="">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_1px_1fr] lg:grid-rows-[auto_auto]">
+          {/* Top-left — text content */}
           {leftColumn && (
-            <div>
-              {leftColumn.sectionLabel && (
-                <SectionLabel>{leftColumn.sectionLabel}</SectionLabel>
-              )}
+            <div className="flex flex-col items-center justify-center text-center px-6 lg:px-12 py-12 lg:py-16">
+              {leftColumn.sectionLabel && <SectionLabel>{leftColumn.sectionLabel}</SectionLabel>}
               {leftColumn.headline && (
-                <h2 className="text-3xl lg:text-4xl xl:text-5xl font-serif font-normal text-text-primary leading-[0.95] tracking-tight mb-4">
+                <h2 className="text-3xl lg:text-4xl xl:text-5xl mt-2 font-serif md:max-w-[16ch] font-normal text-text-primary leading-[1.1] tracking-tight mb-4">
                   {leftColumn.headline}
                 </h2>
               )}
               {leftColumn.body && (
-                <p className="text-lg font-sans font-light text-text-secondary leading-relaxed mb-6">
+                <p className="text-lg font-sans font-light text-text-secondary leading-relaxed mb-6 max-w-md">
                   {leftColumn.body}
                 </p>
               )}
               {leftColumn.socialLinks && leftColumn.socialLinks.length > 0 && (
-                <div className="flex items-center gap-6 mb-8">
+                <div className="flex items-center justify-center gap-6">
                   {leftColumn.socialLinks.map((social) => (
                     <a
                       key={social._key}
@@ -87,54 +86,61 @@ export default function TwoColumnSection({block}: TwoColumnSectionProps) {
                   ))}
                 </div>
               )}
-              {leftColumn.image && (
-                <Image
-                  id={leftColumn.image._id || leftColumn.image.asset?._ref}
-                  hotspot={leftColumn.image.hotspot}
-                  crop={leftColumn.image.crop}
-                  className="w-full h-auto rounded-[12px]"
-                  alt={leftColumn.headline || ''}
-                  width={600}
-                  queryParams={{q: 80}}
-                />
-              )}
             </div>
           )}
 
-          {/* Right — Embark */}
+          {/* Divider — spans both rows */}
+          <div className="hidden lg:block bg-border-dark row-span-2" />
+
+          {/* Top-right — text content */}
           {rightColumn && (
-            <div>
-              {rightColumn.sectionLabel && (
-                <SectionLabel>{rightColumn.sectionLabel}</SectionLabel>
-              )}
+            <div className="flex flex-col items-center justify-center text-center px-6 lg:px-12 py-12 lg:py-16">
+              {rightColumn.sectionLabel && <SectionLabel>{rightColumn.sectionLabel}</SectionLabel>}
               {rightColumn.headline && (
-                <h2 className="text-3xl lg:text-4xl xl:text-5xl font-serif font-normal text-text-primary leading-[0.95] tracking-tight mb-4">
+                <h2 className="text-3xl lg:text-4xl xl:text-5xl font-serif mt-2 font-normal text-text-primary leading-[1.1] tracking-tight mb-4">
                   {rightColumn.headline}
                 </h2>
               )}
               {rightColumn.body && (
-                <p className="text-lg font-sans font-light text-text-secondary leading-relaxed mb-6">
+                <p className="text-lg font-sans font-light text-text-secondary leading-relaxed mb-6 max-w-md">
                   {rightColumn.body}
                 </p>
               )}
               {rightColumn.cta?.buttonText && ctaHref && (
-                <div className="mb-8">
-                  <Button href={ctaHref} variant="textArrow">
-                    {rightColumn.cta.buttonText}
-                  </Button>
-                </div>
+                <Button href={ctaHref} variant="textArrow">
+                  {rightColumn.cta.buttonText}
+                </Button>
               )}
-              {rightColumn.image && (
-                <Image
-                  id={rightColumn.image._id || rightColumn.image.asset?._ref}
-                  hotspot={rightColumn.image.hotspot}
-                  crop={rightColumn.image.crop}
-                  className="w-full h-auto"
-                  alt={rightColumn.headline || ''}
-                  width={600}
-                  queryParams={{q: 80}}
-                />
-              )}
+            </div>
+          )}
+
+          {/* Bottom-left — image */}
+          {leftColumn?.image && (
+            <div className="relative  overflow-hidden">
+              <Image
+                id={leftColumn.image._id || leftColumn.image.asset?._ref}
+                hotspot={leftColumn.image.hotspot}
+                crop={leftColumn.image.crop}
+                className="absolute inset-0 w-full h-full object-cover"
+                alt={leftColumn.headline || ''}
+                width={700}
+                queryParams={{q: 80}}
+              />
+            </div>
+          )}
+
+          {/* Bottom-right — phone image */}
+          {rightColumn?.image && (
+            <div className="flex items-end justify-center px-6 lg:px-12">
+              <Image
+                id={rightColumn.image._id || rightColumn.image.asset?._ref}
+                hotspot={rightColumn.image.hotspot}
+                crop={rightColumn.image.crop}
+                className="h-auto max-w-[400px] w-full object-contain object-bottom"
+                alt={rightColumn.headline || ''}
+                width={540}
+                queryParams={{q: 80}}
+              />
             </div>
           )}
         </div>

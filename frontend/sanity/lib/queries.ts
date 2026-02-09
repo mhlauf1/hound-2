@@ -16,7 +16,8 @@ const postFields = /* groq */ `
 const linkReference = /* groq */ `
   _type == "link" => {
     "page": page->slug.current,
-    "post": post->slug.current
+    "post": post->slug.current,
+    "service": service->slug.current
   }
 `
 
@@ -41,6 +42,86 @@ const ctaButtonFields = /* groq */ `
   }
 `
 
+const pageBuilderProjection = /* groq */ `
+  "pageBuilder": pageBuilder[]{
+    ...,
+    _type == "callToAction" => {
+      ...,
+      ${buttonFields}
+    },
+    _type == "infoSection" => {
+      content[]{
+        ...,
+        markDefs[]{
+          ...,
+          ${linkReference}
+        }
+      }
+    },
+    _type == "hero" => {
+      ...,
+      ${ctaButtonFields}
+    },
+    _type == "servicesAccordion" => {
+      ...,
+      services[]->{
+        _id,
+        title,
+        "slug": slug.current,
+        "description": excerpt,
+        priceLabel,
+        "image": coverImage,
+        ${ctaButtonFields}
+      }
+    },
+    _type == "statsBar" => {
+      ...
+    },
+    _type == "splitFeature" => {
+      ...,
+      ${ctaButtonFields}
+    },
+    _type == "featureGrid" => {
+      ...,
+      features[]{
+        ...,
+        image {
+          ...,
+          asset->
+        }
+      }
+    },
+    _type == "testimonialCarousel" => {
+      ...,
+      testimonials[]->{
+        _id,
+        quote,
+        authorName,
+        authorDescription
+      }
+    },
+    _type == "ctaBanner" => {
+      ...,
+      ${ctaButtonFields}
+    },
+    _type == "twoColumnSection" => {
+      ...,
+      rightColumn {
+        ...,
+        ${ctaButtonFields}
+      }
+    },
+    _type == "faqAccordion" => {
+      ...,
+      faqs[]->{
+        _id,
+        question,
+        answer
+      }
+    },
+  }
+`
+
 export const getPageQuery = defineQuery(`
   *[_type == 'page' && slug.current == $slug][0]{
     _id,
@@ -49,71 +130,7 @@ export const getPageQuery = defineQuery(`
     slug,
     heading,
     subheading,
-    "pageBuilder": pageBuilder[]{
-      ...,
-      _type == "callToAction" => {
-        ...,
-        ${buttonFields}
-      },
-      _type == "infoSection" => {
-        content[]{
-          ...,
-          markDefs[]{
-            ...,
-            ${linkReference}
-          }
-        }
-      },
-      _type == "hero" => {
-        ...,
-        ${ctaButtonFields}
-      },
-      _type == "servicesAccordion" => {
-        ...,
-        services[]{
-          ...,
-          ${ctaButtonFields}
-        }
-      },
-      _type == "statsBar" => {
-        ...
-      },
-      _type == "splitFeature" => {
-        ...,
-        ${ctaButtonFields}
-      },
-      _type == "featureGrid" => {
-        ...
-      },
-      _type == "testimonialCarousel" => {
-        ...,
-        testimonials[]->{
-          _id,
-          quote,
-          authorName,
-          authorDescription
-        }
-      },
-      _type == "ctaBanner" => {
-        ...,
-        ${ctaButtonFields}
-      },
-      _type == "twoColumnSection" => {
-        ...,
-        rightColumn {
-          ...,
-          ${ctaButtonFields}
-        }
-      },
-      _type == "faqAccordion" => {
-        ...,
-        faqs[]->{
-          _id,
-          question,
-          answer
-        }
-      },
-    },
+    ${pageBuilderProjection}
   }
 `)
 
@@ -158,4 +175,21 @@ export const postPagesSlugs = defineQuery(`
 export const pagesSlugs = defineQuery(`
   *[_type == "page" && defined(slug.current)]
   {"slug": slug.current}
+`)
+
+export const servicePagesSlugs = defineQuery(`
+  *[_type == "service" && defined(slug.current)]
+  {"slug": slug.current}
+`)
+
+export const getServiceQuery = defineQuery(`
+  *[_type == 'service' && slug.current == $slug][0]{
+    _id,
+    _type,
+    title,
+    slug,
+    excerpt,
+    coverImage,
+    ${pageBuilderProjection}
+  }
 `)

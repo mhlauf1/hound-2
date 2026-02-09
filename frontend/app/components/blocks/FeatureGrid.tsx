@@ -1,13 +1,11 @@
-'use client'
-
-import {useState} from 'react'
-import AccordionItem from '@/app/components/ui/AccordionItem'
+import Image from '@/app/components/SanityImage'
 
 interface Feature {
   _key: string
   title?: string
   description?: string
   icon?: string
+  image?: any
 }
 
 interface FeatureGridProps {
@@ -19,7 +17,6 @@ interface FeatureGridProps {
 
 export default function FeatureGrid({block}: FeatureGridProps) {
   const {features, columns = 3} = block
-  const [openIndex, setOpenIndex] = useState<number | null>(null)
 
   if (!features?.length) return null
 
@@ -27,7 +24,7 @@ export default function FeatureGrid({block}: FeatureGridProps) {
 
   return (
     <section className="pb-section">
-      <div className="container">
+      <div className="">
         <div className={`grid grid-cols-1 ${colClass} border-t border-border-medium`}>
           {features.map((feature, index) => {
             const colIndex = index % columns
@@ -36,20 +33,33 @@ export default function FeatureGrid({block}: FeatureGridProps) {
             return (
               <div
                 key={feature._key}
-                className={`${showLeftBorder ? 'md:border-l md:border-border-medium' : ''}`}
+                className={`px-10 md:px-16 py-8 border-b border-border-medium ${showLeftBorder ? 'md:border-l md:border-border-medium' : ''}`}
               >
-                <AccordionItem
-                  title={feature.title || ''}
-                  isOpen={openIndex === index}
-                  onToggle={() => setOpenIndex(openIndex === index ? null : index)}
-                  variant="feature"
-                >
-                  {feature.description && (
-                    <p className="text-base font-sans font-light text-text-secondary leading-relaxed">
-                      {feature.description}
-                    </p>
-                  )}
-                </AccordionItem>
+                {feature.image && (
+                  <div className="mb-3 w-10 h-10 relative">
+                    <Image
+                      id={
+                        feature.image._id || feature.image.asset?._ref || feature.image.asset?._id
+                      }
+                      hotspot={feature.image.hotspot}
+                      crop={feature.image.crop}
+                      className="w-full h-full object-contain"
+                      alt={feature.title || ''}
+                      width={80}
+                      queryParams={{q: 80}}
+                    />
+                  </div>
+                )}
+                {feature.title && (
+                  <h3 className="text-xl lg:text-2xl font-sans font-medium text-text-primary mb-2">
+                    {feature.title}
+                  </h3>
+                )}
+                {feature.description && (
+                  <p className="text-base font-sans w-[95%] md:w-[80%] text-text-secondary leading-relaxed">
+                    {feature.description}
+                  </p>
+                )}
               </div>
             )
           })}
