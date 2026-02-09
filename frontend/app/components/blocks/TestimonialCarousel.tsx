@@ -1,8 +1,8 @@
 'use client'
 
-import {useCallback, useEffect, useState} from 'react'
-import useEmblaCarousel from 'embla-carousel-react'
-import SectionLabel from '@/app/components/ui/SectionLabel'
+import {useCallback, useEffect, useRef, useState} from 'react'
+
+const AUTO_PLAY_MS = 7000
 
 interface Testimonial {
   _id: string
@@ -20,63 +20,204 @@ interface TestimonialCarouselProps {
 }
 
 export default function TestimonialCarousel({block}: TestimonialCarouselProps) {
-  const {sectionLabel, headline, testimonials} = block
+  const {testimonials} = block
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [isAnimating, setIsAnimating] = useState(false)
+  const [direction, setDirection] = useState<'left' | 'right'>('right')
+  const [progressKey, setProgressKey] = useState(0)
+  const [paused, setPaused] = useState(false)
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const autoPlayRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  const [emblaRef] = useEmblaCarousel({
-    align: 'start',
-    containScroll: 'trimSnaps',
-    slidesToScroll: 1,
-  })
+  const total = testimonials?.length ?? 0
+
+  const goTo = useCallback(
+    (index: number, dir: 'left' | 'right') => {
+      if (isAnimating || total <= 1 || index === currentIndex) return
+      setDirection(dir)
+      setIsAnimating(true)
+
+      timeoutRef.current = setTimeout(() => {
+        setCurrentIndex(index)
+        setIsAnimating(false)
+        setProgressKey((k) => k + 1)
+      }, 400)
+    },
+    [isAnimating, total, currentIndex],
+  )
+
+  const navigate = useCallback(
+    (dir: 'left' | 'right') => {
+      const next = dir === 'right' ? (currentIndex + 1) % total : (currentIndex - 1 + total) % total
+      goTo(next, dir)
+    },
+    [currentIndex, total, goTo],
+  )
+
+  // Auto-play timer
+  useEffect(() => {
+    if (total <= 1 || paused) return
+
+    autoPlayRef.current = setTimeout(() => {
+      navigate('right')
+    }, AUTO_PLAY_MS)
+
+    return () => {
+      if (autoPlayRef.current) clearTimeout(autoPlayRef.current)
+    }
+  }, [currentIndex, total, paused, navigate])
+
+  // Cleanup animation timeout
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current)
+    }
+  }, [])
 
   if (!testimonials?.length) return null
 
+  const current = testimonials[currentIndex]
+
   return (
-    <section className="py-section overflow-hidden">
-      <div className="container mb-10">
-        {sectionLabel && <SectionLabel className="justify-center text-center">{sectionLabel}</SectionLabel>}
-        {headline && (
-          <h2 className="text-4xl lg:text-5xl xl:text-[64px] font-serif font-normal text-text-primary leading-[0.9] tracking-tight text-center max-w-3xl mx-auto">
-            {headline}
-          </h2>
+    <section
+      className="bg-brand-blue/[0.08] py-section-lg overflow-hidden"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
+      <div className="container flex flex-col items-center">
+        {/* Decorative quotation marks */}
+        <div className="mb-10" aria-hidden="true">
+          <svg width="120" height="90" viewBox="0 0 120 90" fill="none" className="text-brand-blue">
+            <path
+              d="M8 90V58C8 38 16 22 36 10L42 18C30 26 24 38 22 50H36C44.8 50 52 57.2 52 66V82C52 86.4 48.4 90 44 90H8Z"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              fill="currentColor"
+            />
+            <path
+              d="M68 90V58C68 38 76 22 96 10L102 18C90 26 84 38 82 50H96C104.8 50 112 57.2 112 66V82C112 86.4 108.4 90 104 90H68Z"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              fill="currentColor"
+            />
+          </svg>
+        </div>
+
+        {/* Quote and author — animated region */}
+        <div className="relative w-full max-w-4xl min-h-[200px] flex flex-col items-center justify-center">
+          <div
+            className="flex flex-col items-center transition-all duration-400 ease-out"
+            style={{
+              opacity: isAnimating ? 0 : 1,
+              transform: isAnimating
+                ? `translateY(${direction === 'right' ? '16px' : '-16px'})`
+                : 'translateY(0)',
+            }}
+          >
+            {current?.quote && (
+              <blockquote className="text-center mb-8">
+                <p className="text-xl sm:text-2xl lg:text-[28px] xl:text-[32px] font-serif font-normal text-text-primary leading-snug">
+                  {current.quote}
+                </p>
+              </blockquote>
+            )}
+
+            {current?.authorName && (
+              <p className="text-xs sm:text-sm font-medium font-sans text-brand-blue tracking-[0.1em] uppercase  text-center">
+                {current.authorName}
+                {current.authorDescription && `, ${current.authorDescription}`}
+              </p>
+            )}
+          </div>
+        </div>
+
+        {/* Progress indicators */}
+        {total > 1 && (
+          <div className="flex items-center gap-2 mt-10">
+            {testimonials.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => {
+                  goTo(i, i > currentIndex ? 'right' : 'left')
+                }}
+                aria-label={`Go to testimonial ${i + 1}`}
+                className="relative  h-1.5 rounded-full overflow-hidden transition-all duration-300"
+                style={{width: i === currentIndex ? 40 : 10}}
+              >
+                {/* Track */}
+                <span className="absolute inset-0 bg-brand-blue/20 rounded-full" />
+                {/* Fill */}
+                {i === currentIndex && (
+                  <span
+                    key={progressKey}
+                    className="absolute inset-0 rounded-full bg-brand-blue origin-left"
+                    style={{
+                      animation: paused
+                        ? 'none'
+                        : `progress-fill ${AUTO_PLAY_MS}ms linear forwards`,
+                    }}
+                  />
+                )}
+                {i !== currentIndex && (
+                  <span className="absolute inset-0 bg-brand-blue/20 rounded-full" />
+                )}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Navigation arrows */}
+        {total > 1 && (
+          <div className="flex items-center gap-2 mt-5">
+            <button
+              onClick={() => navigate('left')}
+              disabled={isAnimating}
+              aria-label="Previous testimonial"
+              className="w-12 h-12 bg-brand-blue cursor-pointer text-white flex items-center justify-center rounded-sm hover:bg-brand-blue-dark transition-colors duration-200 disabled:opacity-50"
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M13 4L7 10L13 16" />
+              </svg>
+            </button>
+            <button
+              onClick={() => navigate('right')}
+              disabled={isAnimating}
+              aria-label="Next testimonial"
+              className="w-12 h-12 bg-brand-blue cursor-pointer text-white flex items-center justify-center rounded-sm hover:bg-brand-blue-dark transition-colors duration-200 disabled:opacity-50"
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M7 4L13 10L7 16" />
+              </svg>
+            </button>
+          </div>
         )}
       </div>
 
-      <div className="overflow-hidden" ref={emblaRef}>
-        <div className="flex gap-5 pl-6 sm:pl-8 lg:pl-[max(2rem,calc((100vw-1280px)/2+4rem))]">
-          {testimonials.map((testimonial) => (
-            <div
-              key={testimonial._id}
-              className="flex-shrink-0 w-[280px] sm:w-[300px] lg:w-[320px]"
-            >
-              <div className="bg-brand-blue rounded-[12px] p-8 h-full flex flex-col min-h-[320px]">
-                {/* Paw icon */}
-                <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center mb-6">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
-                    <path d="M8.35 3C9.53 2.83 10.78 4.12 11.14 5.9C11.5 7.67 10.85 9.25 9.67 9.43C8.5 9.6 7.24 8.31 6.88 6.54C6.5 4.76 7.18 3.18 8.35 3ZM15.5 3C16.69 3.18 17.35 4.76 17 6.54C16.62 8.31 15.37 9.6 14.19 9.43C13.03 9.25 12.37 7.67 12.72 5.9C13.08 4.12 14.33 2.83 15.5 3ZM3 7.6C4.14 7.11 5.69 8 6.5 9.55C7.26 11.13 7 12.79 5.87 13.28C4.74 13.77 3.2 12.89 2.41 11.31C1.63 9.73 1.86 8.08 3 7.6ZM21 7.6C22.14 8.08 22.37 9.73 21.59 11.31C20.8 12.89 19.26 13.77 18.13 13.28C17 12.79 16.74 11.13 17.5 9.55C18.31 8 19.86 7.11 21 7.6ZM12 12C14.5 12 16.5 16 16.5 18C16.5 20 14.5 22 12 22C9.5 22 7.5 20 7.5 18C7.5 16 9.5 12 12 12Z" />
-                  </svg>
-                </div>
-
-                {/* Quote */}
-                <p className="text-base font-sans text-text-inverse leading-relaxed flex-1 mb-6">
-                  &ldquo;{testimonial.quote}&rdquo;
-                </p>
-
-                {/* Author */}
-                <div>
-                  <p className="text-sm font-sans font-medium text-text-inverse">
-                    {testimonial.authorName}
-                  </p>
-                  {testimonial.authorDescription && (
-                    <p className="text-sm font-sans text-text-inverse-muted">
-                      {testimonial.authorDescription}
-                    </p>
-                  )}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+      {/* Progress bar animation */}
+      <style>{`
+        @keyframes progress-fill {
+          from { transform: scaleX(0); }
+          to { transform: scaleX(1); }
+        }
+      `}</style>
     </section>
   )
 }

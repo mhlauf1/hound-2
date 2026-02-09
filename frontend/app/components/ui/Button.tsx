@@ -15,14 +15,15 @@ interface ButtonProps {
 
 const variantStyles: Record<ButtonVariant, string> = {
   primary:
-    'bg-brand-brown text-brand-white rounded-[12px] px-7 py-3.5 font-sans font-medium text-base hover:opacity-90 transition-opacity',
+    'bg-brand-brown text-center text-brand-white rounded-[12px] px-7 py-3.5 font-sans font-medium text-base hover:opacity-90 transition-opacity',
   secondary:
-    'bg-brand-white text-brand-brown rounded-[12px] px-7 py-3.5 font-sans font-medium text-base hover:shadow-card transition-shadow',
+    'bg-brand-white text-center text-brand-brown rounded-[12px] px-7 py-3.5 font-sans font-medium text-base hover:shadow-card transition-shadow',
   ghost:
-    'bg-transparent text-brand-brown border border-border-medium rounded-[12px] px-7 py-3.5 font-sans font-medium text-base hover:bg-brand-cream transition-colors',
+    'bg-transparent text-center text-brand-brown border border-border-medium rounded-[12px] px-7 py-3.5 font-sans font-medium text-base hover:bg-brand-cream transition-colors',
   inverse:
-    'bg-brand-white text-brand-brown rounded-[12px] px-7 py-3.5 font-sans font-medium text-base hover:opacity-90 transition-opacity',
-  textArrow: 'inline-flex items-center gap-2 font-sans font-medium text-base hover:underline transition-all',
+    'bg-brand-white text-center text-brand-brown rounded-[12px] px-7 py-3.5 font-sans font-medium text-base hover:opacity-90 transition-opacity',
+  textArrow:
+    'inline-flex items-center gap-2 font-sans font-medium text-base hover:underline transition-all',
 }
 
 export default function Button({

@@ -40,14 +40,6 @@ export type SanityImageAssetReference = {
   [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
 }
 
-export type ObjectImage = {
-  asset?: SanityImageAssetReference
-  media?: unknown // Unable to locate the referenced type "object.image.media" in schema
-  hotspot?: SanityImageHotspot
-  crop?: SanityImageCrop
-  _type: 'image'
-}
-
 export type LeftColumnImage = {
   asset?: SanityImageAssetReference
   media?: unknown // Unable to locate the referenced type "leftColumn.image.media" in schema
@@ -159,17 +151,22 @@ export type StatsBar = {
   }>
 }
 
+export type ServiceReference = {
+  _ref: string
+  _type: 'reference'
+  _weak?: boolean
+  [internalGroqTypeReferenceTo]?: 'service'
+}
+
 export type ServicesAccordion = {
   _type: 'servicesAccordion'
   sectionLabel?: string
   headline: string
-  services: Array<{
-    title: string
-    description?: string
-    image?: ObjectImage
-    cta?: Button
-    _key: string
-  }>
+  services: Array<
+    {
+      _key: string
+    } & ServiceReference
+  >
   defaultOpen?: number
 }
 
@@ -204,10 +201,11 @@ export type PostReference = {
 
 export type Link = {
   _type: 'link'
-  linkType?: 'href' | 'page' | 'post'
+  linkType?: 'href' | 'page' | 'post' | 'service'
   href?: string
   page?: PageReference
   post?: PostReference
+  service?: ServiceReference
   openInNewTab?: boolean
 }
 
@@ -314,6 +312,84 @@ export type Testimonial = {
   authorDescription?: string
 }
 
+export type Service = {
+  _id: string
+  _type: 'service'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  title: string
+  slug: Slug
+  excerpt?: string
+  priceLabel?: string
+  cta?: Button
+  coverImage?: {
+    asset?: SanityImageAssetReference
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    alt?: string
+    _type: 'image'
+  }
+  pageBuilder?: Array<
+    | ({
+        _key: string
+      } & Hero)
+    | ({
+        _key: string
+      } & ServicesAccordion)
+    | ({
+        _key: string
+      } & StatsBar)
+    | ({
+        _key: string
+      } & SplitFeature)
+    | ({
+        _key: string
+      } & FeatureGrid)
+    | ({
+        _key: string
+      } & TestimonialCarousel)
+    | ({
+        _key: string
+      } & CtaBanner)
+    | ({
+        _key: string
+      } & TwoColumnSection)
+    | ({
+        _key: string
+      } & FaqAccordion)
+    | ({
+        _key: string
+      } & CallToAction)
+    | ({
+        _key: string
+      } & InfoSection)
+  >
+}
+
+export type SanityImageCrop = {
+  _type: 'sanity.imageCrop'
+  top: number
+  bottom: number
+  left: number
+  right: number
+}
+
+export type SanityImageHotspot = {
+  _type: 'sanity.imageHotspot'
+  x: number
+  y: number
+  height: number
+  width: number
+}
+
+export type Slug = {
+  _type: 'slug'
+  current: string
+  source?: string
+}
+
 export type Settings = {
   _id: string
   _type: 'settings'
@@ -352,22 +428,6 @@ export type Settings = {
     metadataBase?: string
     _type: 'image'
   }
-}
-
-export type SanityImageCrop = {
-  _type: 'sanity.imageCrop'
-  top: number
-  bottom: number
-  left: number
-  right: number
-}
-
-export type SanityImageHotspot = {
-  _type: 'sanity.imageHotspot'
-  x: number
-  y: number
-  height: number
-  width: number
 }
 
 export type Page = {
@@ -462,12 +522,6 @@ export type Person = {
     alt?: string
     _type: 'image'
   }
-}
-
-export type Slug = {
-  _type: 'slug'
-  current: string
-  source?: string
 }
 
 export type SanityAssistInstructionTask = {
@@ -707,7 +761,6 @@ export type AllSanitySchemaTypes =
   | LeftColumn
   | RightColumn
   | SanityImageAssetReference
-  | ObjectImage
   | LeftColumnImage
   | RightColumnImage
   | FaqReference
@@ -719,6 +772,7 @@ export type AllSanitySchemaTypes =
   | FeatureGrid
   | SplitFeature
   | StatsBar
+  | ServiceReference
   | ServicesAccordion
   | Hero
   | PageReference
@@ -731,14 +785,15 @@ export type AllSanitySchemaTypes =
   | Button
   | Faq
   | Testimonial
-  | Settings
+  | Service
   | SanityImageCrop
   | SanityImageHotspot
+  | Slug
+  | Settings
   | Page
   | PersonReference
   | Post
   | Person
-  | Slug
   | SanityAssistInstructionTask
   | SanityAssistTaskStatus
   | SanityAssistSchemaTypeAnnotations
@@ -808,7 +863,7 @@ export type SettingsQueryResult = {
 
 // Source: sanity/lib/queries.ts
 // Variable: getPageQuery
-// Query: *[_type == 'page' && slug.current == $slug][0]{    _id,    _type,    name,    slug,    heading,    subheading,    "pageBuilder": pageBuilder[]{      ...,      _type == "callToAction" => {        ...,          button {    ...,      link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }      }  }      },      _type == "infoSection" => {        content[]{          ...,          markDefs[]{            ...,              _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }          }        }      },      _type == "hero" => {        ...,          cta {    ...,      link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }      }  }      },      _type == "servicesAccordion" => {        ...,        services[]{          ...,            cta {    ...,      link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }      }  }        }      },      _type == "statsBar" => {        ...      },      _type == "splitFeature" => {        ...,          cta {    ...,      link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }      }  }      },      _type == "featureGrid" => {        ...      },      _type == "testimonialCarousel" => {        ...,        testimonials[]->{          _id,          quote,          authorName,          authorDescription        }      },      _type == "ctaBanner" => {        ...,          cta {    ...,      link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }      }  }      },      _type == "twoColumnSection" => {        ...,        rightColumn {          ...,            cta {    ...,      link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }      }  }        }      },      _type == "faqAccordion" => {        ...,        faqs[]->{          _id,          question,          answer        }      },    },  }
+// Query: *[_type == 'page' && slug.current == $slug][0]{    _id,    _type,    name,    slug,    heading,    subheading,      "pageBuilder": pageBuilder[]{    ...,    _type == "callToAction" => {      ...,        button {    ...,      link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current,    "service": service->slug.current  }      }  }    },    _type == "infoSection" => {      content[]{        ...,        markDefs[]{          ...,            _type == "link" => {    "page": page->slug.current,    "post": post->slug.current,    "service": service->slug.current  }        }      }    },    _type == "hero" => {      ...,        cta {    ...,      link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current,    "service": service->slug.current  }      }  }    },    _type == "servicesAccordion" => {      ...,      services[]->{        _id,        title,        "slug": slug.current,        "description": excerpt,        priceLabel,        "image": coverImage,          cta {    ...,      link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current,    "service": service->slug.current  }      }  }      }    },    _type == "statsBar" => {      ...    },    _type == "splitFeature" => {      ...,        cta {    ...,      link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current,    "service": service->slug.current  }      }  }    },    _type == "featureGrid" => {      ...    },    _type == "testimonialCarousel" => {      ...,      testimonials[]->{        _id,        quote,        authorName,        authorDescription      }    },    _type == "ctaBanner" => {      ...,        cta {    ...,      link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current,    "service": service->slug.current  }      }  }    },    _type == "twoColumnSection" => {      ...,      rightColumn {        ...,          cta {    ...,      link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current,    "service": service->slug.current  }      }  }      }    },    _type == "faqAccordion" => {      ...,      faqs[]->{        _id,        question,        answer      }    },  }  }
 export type GetPageQueryResult = {
   _id: string
   _type: 'page'
@@ -828,10 +883,11 @@ export type GetPageQueryResult = {
           buttonText?: string
           link: {
             _type: 'link'
-            linkType?: 'href' | 'page' | 'post'
+            linkType?: 'href' | 'page' | 'post' | 'service'
             href?: string
             page: string | null
             post: string | null
+            service: string | null
             openInNewTab?: boolean
           } | null
         } | null
@@ -855,10 +911,11 @@ export type GetPageQueryResult = {
           buttonText?: string
           link: {
             _type: 'link'
-            linkType?: 'href' | 'page' | 'post'
+            linkType?: 'href' | 'page' | 'post' | 'service'
             href?: string
             page: string | null
             post: string | null
+            service: string | null
             openInNewTab?: boolean
           } | null
         } | null
@@ -910,10 +967,11 @@ export type GetPageQueryResult = {
           buttonText?: string
           link: {
             _type: 'link'
-            linkType?: 'href' | 'page' | 'post'
+            linkType?: 'href' | 'page' | 'post' | 'service'
             href?: string
             page: string | null
             post: string | null
+            service: string | null
             openInNewTab?: boolean
           } | null
         } | null
@@ -942,6 +1000,7 @@ export type GetPageQueryResult = {
                 openInNewTab?: boolean
                 _type: 'link'
                 _key: string
+                service: null
               }> | null
               level?: number
               _type: 'block'
@@ -964,22 +1023,32 @@ export type GetPageQueryResult = {
         sectionLabel?: string
         headline: string
         services: Array<{
+          _id: string
           title: string
-          description?: string
-          image?: ObjectImage
+          slug: string
+          description: string | null
+          priceLabel: string | null
+          image: {
+            asset?: SanityImageAssetReference
+            media?: unknown
+            hotspot?: SanityImageHotspot
+            crop?: SanityImageCrop
+            alt?: string
+            _type: 'image'
+          } | null
           cta: {
             _type: 'button'
             buttonText?: string
             link: {
               _type: 'link'
-              linkType?: 'href' | 'page' | 'post'
+              linkType?: 'href' | 'page' | 'post' | 'service'
               href?: string
               page: string | null
               post: string | null
+              service: string | null
               openInNewTab?: boolean
             } | null
           } | null
-          _key: string
         }>
         defaultOpen?: number
       }
@@ -1002,10 +1071,11 @@ export type GetPageQueryResult = {
           buttonText?: string
           link: {
             _type: 'link'
-            linkType?: 'href' | 'page' | 'post'
+            linkType?: 'href' | 'page' | 'post' | 'service'
             href?: string
             page: string | null
             post: string | null
+            service: string | null
             openInNewTab?: boolean
           } | null
         } | null
@@ -1046,10 +1116,11 @@ export type GetPageQueryResult = {
             buttonText?: string
             link: {
               _type: 'link'
-              linkType?: 'href' | 'page' | 'post'
+              linkType?: 'href' | 'page' | 'post' | 'service'
               href?: string
               page: string | null
               post: string | null
+              service: string | null
               openInNewTab?: boolean
             } | null
           } | null
@@ -1141,7 +1212,7 @@ export type MorePostsQueryResult = Array<{
 
 // Source: sanity/lib/queries.ts
 // Variable: postQuery
-// Query: *[_type == "post" && slug.current == $slug] [0] {    content[]{    ...,    markDefs[]{      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current  }    }  },      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  excerpt,  coverImage,  "date": coalesce(date, _updatedAt),  "author": author->{firstName, lastName, picture},  }
+// Query: *[_type == "post" && slug.current == $slug] [0] {    content[]{    ...,    markDefs[]{      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current,    "service": service->slug.current  }    }  },      _id,  "status": select(_originalId in path("drafts.**") => "draft", "published"),  "title": coalesce(title, "Untitled"),  "slug": slug.current,  excerpt,  coverImage,  "date": coalesce(date, _updatedAt),  "author": author->{firstName, lastName, picture},  }
 export type PostQueryResult = {
   content: Array<
     | {
@@ -1161,6 +1232,7 @@ export type PostQueryResult = {
           openInNewTab?: boolean
           _type: 'link'
           _key: string
+          service: null
         }> | null
         level?: number
         _type: 'block'
@@ -1218,17 +1290,302 @@ export type PagesSlugsResult = Array<{
   slug: string
 }>
 
+// Source: sanity/lib/queries.ts
+// Variable: servicePagesSlugs
+// Query: *[_type == "service" && defined(slug.current)]  {"slug": slug.current}
+export type ServicePagesSlugsResult = Array<{
+  slug: string
+}>
+
+// Source: sanity/lib/queries.ts
+// Variable: getServiceQuery
+// Query: *[_type == 'service' && slug.current == $slug][0]{    _id,    _type,    title,    slug,    excerpt,    coverImage,      "pageBuilder": pageBuilder[]{    ...,    _type == "callToAction" => {      ...,        button {    ...,      link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current,    "service": service->slug.current  }      }  }    },    _type == "infoSection" => {      content[]{        ...,        markDefs[]{          ...,            _type == "link" => {    "page": page->slug.current,    "post": post->slug.current,    "service": service->slug.current  }        }      }    },    _type == "hero" => {      ...,        cta {    ...,      link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current,    "service": service->slug.current  }      }  }    },    _type == "servicesAccordion" => {      ...,      services[]->{        _id,        title,        "slug": slug.current,        "description": excerpt,        priceLabel,        "image": coverImage,          cta {    ...,      link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current,    "service": service->slug.current  }      }  }      }    },    _type == "statsBar" => {      ...    },    _type == "splitFeature" => {      ...,        cta {    ...,      link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current,    "service": service->slug.current  }      }  }    },    _type == "featureGrid" => {      ...    },    _type == "testimonialCarousel" => {      ...,      testimonials[]->{        _id,        quote,        authorName,        authorDescription      }    },    _type == "ctaBanner" => {      ...,        cta {    ...,      link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current,    "service": service->slug.current  }      }  }    },    _type == "twoColumnSection" => {      ...,      rightColumn {        ...,          cta {    ...,      link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current,    "service": service->slug.current  }      }  }      }    },    _type == "faqAccordion" => {      ...,      faqs[]->{        _id,        question,        answer      }    },  }  }
+export type GetServiceQueryResult = {
+  _id: string
+  _type: 'service'
+  title: string
+  slug: Slug
+  excerpt: string | null
+  coverImage: {
+    asset?: SanityImageAssetReference
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    alt?: string
+    _type: 'image'
+  } | null
+  pageBuilder: Array<
+    | {
+        _key: string
+        _type: 'callToAction'
+        eyebrow?: string
+        heading: string
+        body?: BlockContentTextOnly
+        button: {
+          _type: 'button'
+          buttonText?: string
+          link: {
+            _type: 'link'
+            linkType?: 'href' | 'page' | 'post' | 'service'
+            href?: string
+            page: string | null
+            post: string | null
+            service: string | null
+            openInNewTab?: boolean
+          } | null
+        } | null
+        image?: {
+          asset?: SanityImageAssetReference
+          media?: unknown
+          hotspot?: SanityImageHotspot
+          crop?: SanityImageCrop
+          _type: 'image'
+        }
+        theme?: 'dark' | 'light'
+        contentAlignment?: 'imageFirst' | 'textFirst'
+      }
+    | {
+        _key: string
+        _type: 'ctaBanner'
+        sectionLabel?: string
+        headline: string
+        cta: {
+          _type: 'button'
+          buttonText?: string
+          link: {
+            _type: 'link'
+            linkType?: 'href' | 'page' | 'post' | 'service'
+            href?: string
+            page: string | null
+            post: string | null
+            service: string | null
+            openInNewTab?: boolean
+          } | null
+        } | null
+        image?: {
+          asset?: SanityImageAssetReference
+          media?: unknown
+          hotspot?: SanityImageHotspot
+          crop?: SanityImageCrop
+          _type: 'image'
+        }
+        backgroundColor?: 'blue' | 'brown' | 'cream'
+      }
+    | {
+        _key: string
+        _type: 'faqAccordion'
+        sectionLabel?: string
+        headline: string
+        faqs: Array<{
+          _id: string
+          question: string
+          answer: BlockContentTextOnly
+        }>
+      }
+    | {
+        _key: string
+        _type: 'featureGrid'
+        features: Array<{
+          title: string
+          description?: string
+          icon?: string
+          _key: string
+        }>
+        columns?: 2 | 3
+      }
+    | {
+        _key: string
+        _type: 'hero'
+        headline: string
+        subtext?: string
+        backgroundImage: {
+          asset?: SanityImageAssetReference
+          media?: unknown
+          hotspot?: SanityImageHotspot
+          crop?: SanityImageCrop
+          _type: 'image'
+        }
+        cta: {
+          _type: 'button'
+          buttonText?: string
+          link: {
+            _type: 'link'
+            linkType?: 'href' | 'page' | 'post' | 'service'
+            href?: string
+            page: string | null
+            post: string | null
+            service: string | null
+            openInNewTab?: boolean
+          } | null
+        } | null
+        overlay?: 'dark' | 'light' | 'none'
+      }
+    | {
+        _key: string
+        _type: 'infoSection'
+        heading?: string
+        subheading?: string
+        content: Array<
+          | {
+              children?: Array<{
+                marks?: Array<string>
+                text?: string
+                _type: 'span'
+                _key: string
+              }>
+              style?: 'blockquote' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'normal'
+              listItem?: 'bullet' | 'number'
+              markDefs: Array<{
+                linkType?: 'href' | 'page' | 'post'
+                href?: string
+                page: string | null
+                post: string | null
+                openInNewTab?: boolean
+                _type: 'link'
+                _key: string
+                service: null
+              }> | null
+              level?: number
+              _type: 'block'
+              _key: string
+            }
+          | {
+              asset?: SanityImageAssetReference
+              media?: unknown
+              hotspot?: SanityImageHotspot
+              crop?: SanityImageCrop
+              _type: 'image'
+              _key: string
+              markDefs: null
+            }
+        > | null
+      }
+    | {
+        _key: string
+        _type: 'servicesAccordion'
+        sectionLabel?: string
+        headline: string
+        services: Array<{
+          _id: string
+          title: string
+          slug: string
+          description: string | null
+          priceLabel: string | null
+          image: {
+            asset?: SanityImageAssetReference
+            media?: unknown
+            hotspot?: SanityImageHotspot
+            crop?: SanityImageCrop
+            alt?: string
+            _type: 'image'
+          } | null
+          cta: {
+            _type: 'button'
+            buttonText?: string
+            link: {
+              _type: 'link'
+              linkType?: 'href' | 'page' | 'post' | 'service'
+              href?: string
+              page: string | null
+              post: string | null
+              service: string | null
+              openInNewTab?: boolean
+            } | null
+          } | null
+        }>
+        defaultOpen?: number
+      }
+    | {
+        _key: string
+        _type: 'splitFeature'
+        sectionLabel?: string
+        headline: string
+        body?: BlockContentTextOnly
+        image: {
+          asset?: SanityImageAssetReference
+          media?: unknown
+          hotspot?: SanityImageHotspot
+          crop?: SanityImageCrop
+          _type: 'image'
+        }
+        imagePosition?: 'left' | 'right'
+        cta: {
+          _type: 'button'
+          buttonText?: string
+          link: {
+            _type: 'link'
+            linkType?: 'href' | 'page' | 'post' | 'service'
+            href?: string
+            page: string | null
+            post: string | null
+            service: string | null
+            openInNewTab?: boolean
+          } | null
+        } | null
+      }
+    | {
+        _key: string
+        _type: 'statsBar'
+        stats: Array<{
+          value: string
+          label: string
+          showStars?: boolean
+          starCount?: number
+          _key: string
+        }>
+      }
+    | {
+        _key: string
+        _type: 'testimonialCarousel'
+        sectionLabel?: string
+        headline: string
+        testimonials: Array<{
+          _id: string
+          quote: string
+          authorName: string
+          authorDescription: string | null
+        }>
+      }
+    | {
+        _key: string
+        _type: 'twoColumnSection'
+        leftColumn?: LeftColumn
+        rightColumn: {
+          sectionLabel?: string
+          headline?: string
+          body?: string
+          cta: {
+            _type: 'button'
+            buttonText?: string
+            link: {
+              _type: 'link'
+              linkType?: 'href' | 'page' | 'post' | 'service'
+              href?: string
+              page: string | null
+              post: string | null
+              service: string | null
+              openInNewTab?: boolean
+            } | null
+          } | null
+          image?: RightColumnImage
+        } | null
+      }
+  > | null
+} | null
+
 // Query TypeMap
 import '@sanity/client'
 declare module '@sanity/client' {
   interface SanityQueries {
     '*[_type == "settings"][0]': SettingsQueryResult
-    '\n  *[_type == \'page\' && slug.current == $slug][0]{\n    _id,\n    _type,\n    name,\n    slug,\n    heading,\n    subheading,\n    "pageBuilder": pageBuilder[]{\n      ...,\n      _type == "callToAction" => {\n        ...,\n        \n  button {\n    ...,\n    \n  link {\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current\n  }\n\n      }\n\n  }\n\n      },\n      _type == "infoSection" => {\n        content[]{\n          ...,\n          markDefs[]{\n            ...,\n            \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current\n  }\n\n          }\n        }\n      },\n      _type == "hero" => {\n        ...,\n        \n  cta {\n    ...,\n    \n  link {\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current\n  }\n\n      }\n\n  }\n\n      },\n      _type == "servicesAccordion" => {\n        ...,\n        services[]{\n          ...,\n          \n  cta {\n    ...,\n    \n  link {\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current\n  }\n\n      }\n\n  }\n\n        }\n      },\n      _type == "statsBar" => {\n        ...\n      },\n      _type == "splitFeature" => {\n        ...,\n        \n  cta {\n    ...,\n    \n  link {\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current\n  }\n\n      }\n\n  }\n\n      },\n      _type == "featureGrid" => {\n        ...\n      },\n      _type == "testimonialCarousel" => {\n        ...,\n        testimonials[]->{\n          _id,\n          quote,\n          authorName,\n          authorDescription\n        }\n      },\n      _type == "ctaBanner" => {\n        ...,\n        \n  cta {\n    ...,\n    \n  link {\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current\n  }\n\n      }\n\n  }\n\n      },\n      _type == "twoColumnSection" => {\n        ...,\n        rightColumn {\n          ...,\n          \n  cta {\n    ...,\n    \n  link {\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current\n  }\n\n      }\n\n  }\n\n        }\n      },\n      _type == "faqAccordion" => {\n        ...,\n        faqs[]->{\n          _id,\n          question,\n          answer\n        }\n      },\n    },\n  }\n': GetPageQueryResult
+    '\n  *[_type == \'page\' && slug.current == $slug][0]{\n    _id,\n    _type,\n    name,\n    slug,\n    heading,\n    subheading,\n    \n  "pageBuilder": pageBuilder[]{\n    ...,\n    _type == "callToAction" => {\n      ...,\n      \n  button {\n    ...,\n    \n  link {\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current,\n    "service": service->slug.current\n  }\n\n      }\n\n  }\n\n    },\n    _type == "infoSection" => {\n      content[]{\n        ...,\n        markDefs[]{\n          ...,\n          \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current,\n    "service": service->slug.current\n  }\n\n        }\n      }\n    },\n    _type == "hero" => {\n      ...,\n      \n  cta {\n    ...,\n    \n  link {\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current,\n    "service": service->slug.current\n  }\n\n      }\n\n  }\n\n    },\n    _type == "servicesAccordion" => {\n      ...,\n      services[]->{\n        _id,\n        title,\n        "slug": slug.current,\n        "description": excerpt,\n        priceLabel,\n        "image": coverImage,\n        \n  cta {\n    ...,\n    \n  link {\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current,\n    "service": service->slug.current\n  }\n\n      }\n\n  }\n\n      }\n    },\n    _type == "statsBar" => {\n      ...\n    },\n    _type == "splitFeature" => {\n      ...,\n      \n  cta {\n    ...,\n    \n  link {\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current,\n    "service": service->slug.current\n  }\n\n      }\n\n  }\n\n    },\n    _type == "featureGrid" => {\n      ...\n    },\n    _type == "testimonialCarousel" => {\n      ...,\n      testimonials[]->{\n        _id,\n        quote,\n        authorName,\n        authorDescription\n      }\n    },\n    _type == "ctaBanner" => {\n      ...,\n      \n  cta {\n    ...,\n    \n  link {\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current,\n    "service": service->slug.current\n  }\n\n      }\n\n  }\n\n    },\n    _type == "twoColumnSection" => {\n      ...,\n      rightColumn {\n        ...,\n        \n  cta {\n    ...,\n    \n  link {\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current,\n    "service": service->slug.current\n  }\n\n      }\n\n  }\n\n      }\n    },\n    _type == "faqAccordion" => {\n      ...,\n      faqs[]->{\n        _id,\n        question,\n        answer\n      }\n    },\n  }\n\n  }\n': GetPageQueryResult
     '\n  *[_type == "page" || _type == "post" && defined(slug.current)] | order(_type asc) {\n    "slug": slug.current,\n    _type,\n    _updatedAt,\n  }\n': SitemapDataResult
     '\n  *[_type == "post" && defined(slug.current)] | order(date desc, _updatedAt desc) {\n    \n  _id,\n  "status": select(_originalId in path("drafts.**") => "draft", "published"),\n  "title": coalesce(title, "Untitled"),\n  "slug": slug.current,\n  excerpt,\n  coverImage,\n  "date": coalesce(date, _updatedAt),\n  "author": author->{firstName, lastName, picture},\n\n  }\n': AllPostsQueryResult
     '\n  *[_type == "post" && _id != $skip && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {\n    \n  _id,\n  "status": select(_originalId in path("drafts.**") => "draft", "published"),\n  "title": coalesce(title, "Untitled"),\n  "slug": slug.current,\n  excerpt,\n  coverImage,\n  "date": coalesce(date, _updatedAt),\n  "author": author->{firstName, lastName, picture},\n\n  }\n': MorePostsQueryResult
-    '\n  *[_type == "post" && slug.current == $slug] [0] {\n    content[]{\n    ...,\n    markDefs[]{\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current\n  }\n\n    }\n  },\n    \n  _id,\n  "status": select(_originalId in path("drafts.**") => "draft", "published"),\n  "title": coalesce(title, "Untitled"),\n  "slug": slug.current,\n  excerpt,\n  coverImage,\n  "date": coalesce(date, _updatedAt),\n  "author": author->{firstName, lastName, picture},\n\n  }\n': PostQueryResult
+    '\n  *[_type == "post" && slug.current == $slug] [0] {\n    content[]{\n    ...,\n    markDefs[]{\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current,\n    "service": service->slug.current\n  }\n\n    }\n  },\n    \n  _id,\n  "status": select(_originalId in path("drafts.**") => "draft", "published"),\n  "title": coalesce(title, "Untitled"),\n  "slug": slug.current,\n  excerpt,\n  coverImage,\n  "date": coalesce(date, _updatedAt),\n  "author": author->{firstName, lastName, picture},\n\n  }\n': PostQueryResult
     '\n  *[_type == "post" && defined(slug.current)]\n  {"slug": slug.current}\n': PostPagesSlugsResult
     '\n  *[_type == "page" && defined(slug.current)]\n  {"slug": slug.current}\n': PagesSlugsResult
+    '\n  *[_type == "service" && defined(slug.current)]\n  {"slug": slug.current}\n': ServicePagesSlugsResult
+    '\n  *[_type == \'service\' && slug.current == $slug][0]{\n    _id,\n    _type,\n    title,\n    slug,\n    excerpt,\n    coverImage,\n    \n  "pageBuilder": pageBuilder[]{\n    ...,\n    _type == "callToAction" => {\n      ...,\n      \n  button {\n    ...,\n    \n  link {\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current,\n    "service": service->slug.current\n  }\n\n      }\n\n  }\n\n    },\n    _type == "infoSection" => {\n      content[]{\n        ...,\n        markDefs[]{\n          ...,\n          \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current,\n    "service": service->slug.current\n  }\n\n        }\n      }\n    },\n    _type == "hero" => {\n      ...,\n      \n  cta {\n    ...,\n    \n  link {\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current,\n    "service": service->slug.current\n  }\n\n      }\n\n  }\n\n    },\n    _type == "servicesAccordion" => {\n      ...,\n      services[]->{\n        _id,\n        title,\n        "slug": slug.current,\n        "description": excerpt,\n        priceLabel,\n        "image": coverImage,\n        \n  cta {\n    ...,\n    \n  link {\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current,\n    "service": service->slug.current\n  }\n\n      }\n\n  }\n\n      }\n    },\n    _type == "statsBar" => {\n      ...\n    },\n    _type == "splitFeature" => {\n      ...,\n      \n  cta {\n    ...,\n    \n  link {\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current,\n    "service": service->slug.current\n  }\n\n      }\n\n  }\n\n    },\n    _type == "featureGrid" => {\n      ...\n    },\n    _type == "testimonialCarousel" => {\n      ...,\n      testimonials[]->{\n        _id,\n        quote,\n        authorName,\n        authorDescription\n      }\n    },\n    _type == "ctaBanner" => {\n      ...,\n      \n  cta {\n    ...,\n    \n  link {\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current,\n    "service": service->slug.current\n  }\n\n      }\n\n  }\n\n    },\n    _type == "twoColumnSection" => {\n      ...,\n      rightColumn {\n        ...,\n        \n  cta {\n    ...,\n    \n  link {\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current,\n    "service": service->slug.current\n  }\n\n      }\n\n  }\n\n      }\n    },\n    _type == "faqAccordion" => {\n      ...,\n      faqs[]->{\n        _id,\n        question,\n        answer\n      }\n    },\n  }\n\n  }\n': GetServiceQueryResult
   }
 }

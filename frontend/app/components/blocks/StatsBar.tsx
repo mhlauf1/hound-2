@@ -22,9 +22,9 @@ export default function StatsBar({block}: StatsBarProps) {
   if (!stats?.length) return null
 
   return (
-    <section className="py-section-xs border-y border-border-default">
+    <section className="py-section border-y border-border-default">
       <div className="container">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-0">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-16 md:gap-0">
           {stats.map((stat, index) => (
             <div
               key={stat._key}
@@ -33,7 +33,7 @@ export default function StatsBar({block}: StatsBarProps) {
               }`}
             >
               <div className="flex items-center gap-3 mb-2">
-                <span className="text-5xl lg:text-[56px] font-serif text-text-primary leading-none tracking-tight">
+                <span className="text-5xl lg:text-7xl font-serif text-text-primary leading-none tracking-tight">
                   {stat.value}
                 </span>
                 {stat.showStars && (
@@ -50,9 +50,7 @@ export default function StatsBar({block}: StatsBarProps) {
                   </div>
                 )}
               </div>
-              <span className="text-base font-sans text-text-secondary">
-                {stat.label}
-              </span>
+              <span className="text-base font-sans text-text-secondary">{stat.label}</span>
             </div>
           ))}
         </div>

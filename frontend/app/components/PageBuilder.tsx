@@ -4,18 +4,17 @@ import {SanityDocument} from 'next-sanity'
 import {useOptimistic} from 'next-sanity/hooks'
 
 import BlockRenderer from '@/app/components/BlockRenderer'
-import {GetPageQueryResult} from '@/sanity.types'
 import {dataAttr} from '@/sanity/lib/utils'
 import {PageBuilderSection} from '@/sanity/lib/types'
-
-type PageBuilderPageProps = {
-  page: GetPageQueryResult
-}
 
 type PageData = {
   _id: string
   _type: string
-  pageBuilder?: PageBuilderSection[]
+  pageBuilder?: PageBuilderSection[] | null
+}
+
+type PageBuilderPageProps = {
+  page: PageData | null
 }
 
 /**
@@ -27,7 +26,7 @@ function RenderSections({
   page,
 }: {
   pageBuilderSections: PageBuilderSection[]
-  page: GetPageQueryResult
+  page: PageData | null
 }) {
   if (!page) {
     return null
@@ -53,7 +52,7 @@ function RenderSections({
   )
 }
 
-function RenderEmptyState({page}: {page: GetPageQueryResult}) {
+function RenderEmptyState({page}: {page: PageData | null}) {
   if (!page) {
     return null
   }

@@ -30,12 +30,12 @@ export default function FAQAccordion({block}: FAQAccordionProps) {
       <div className="container-narrow text-center">
         {sectionLabel && <SectionLabel className="justify-center">{sectionLabel}</SectionLabel>}
         {headline && (
-          <h2 className="text-4xl lg:text-5xl xl:text-[64px] font-serif font-normal text-text-primary leading-[0.9] tracking-tight mb-12">
+          <h2 className="text-4xl lg:text-5xl xl:text-[64px] font-serif font-normal text-text-primary leading-[1.1] mt-2 tracking-tight mb-10">
             {headline}
           </h2>
         )}
       </div>
-      <div className="container-narrow">
+      <div className="container flex flex-col gap-3">
         {faqs.map((faq, index) => (
           <AccordionItem
             key={faq._id}

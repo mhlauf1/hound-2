@@ -4,12 +4,16 @@ interface SectionLabelProps {
   className?: string
 }
 
-export default function SectionLabel({children, variant = 'onCream', className = ''}: SectionLabelProps) {
+export default function SectionLabel({
+  children,
+  variant = 'onCream',
+  className = '',
+}: SectionLabelProps) {
   const colorClass = variant === 'onBlue' ? 'text-text-inverse' : 'text-brand-blue'
 
   return (
     <span
-      className={`block text-[13px] font-sans font-normal uppercase tracking-[0.1em] leading-none mb-4 ${colorClass} ${className}`}
+      className={`block text-[13px] font-sans font-semibold uppercase tracking-[0.1em] leading-none mb-4 ${colorClass} ${className}`}
     >
       {children}
     </span>
