@@ -32,17 +32,6 @@ export default function Navigation() {
             ))}
           </ul>
 
-          {/* Mobile hamburger */}
-          <button
-            className="md:hidden text-text-primary"
-            onClick={() => setMobileMenuOpen(true)}
-            aria-label="Open menu"
-          >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-            </svg>
-          </button>
-
           {/* Center — Logo */}
           <Link href="/" className="flex flex-col items-center">
             <span className="text-2xl font-serif text-text-primary leading-tight">
@@ -53,7 +42,7 @@ export default function Navigation() {
             </span>
           </Link>
 
-          {/* Right — Phone + CTA */}
+          {/* Right — Phone + CTA (desktop), Hamburger (mobile) */}
           <div className="flex items-center gap-4">
             <a
               href="tel:+16516003200"
@@ -63,10 +52,24 @@ export default function Navigation() {
             </a>
             <Link
               href="/book"
-              className="bg-brand-brown text-brand-white text-base font-sans font-medium px-6 py-2.5 rounded-[12px] hover:opacity-90 transition-opacity"
+              className="hidden md:inline-flex bg-brand-brown text-brand-white text-base font-sans font-medium px-6 py-2.5 rounded-[12px] hover:opacity-90 transition-opacity"
             >
               Book Now
             </Link>
+            <button
+              className="md:hidden text-text-primary"
+              onClick={() => setMobileMenuOpen(true)}
+              aria-label="Open menu"
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M3 6h18M3 12h18M3 18h18"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </button>
           </div>
         </div>
       </nav>

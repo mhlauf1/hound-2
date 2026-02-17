@@ -1,4 +1,5 @@
 import Image from '@/app/components/SanityImage'
+import {FadeIn} from '@/app/components/ui/FadeIn'
 
 interface Feature {
   _key: string
@@ -35,31 +36,33 @@ export default function FeatureGrid({block}: FeatureGridProps) {
                 key={feature._key}
                 className={`px-10 md:px-16 py-8 border-b border-border-medium ${showLeftBorder ? 'md:border-l md:border-border-medium' : ''}`}
               >
-                {feature.image && (
-                  <div className="mb-3 w-10 h-10 relative">
-                    <Image
-                      id={
-                        feature.image._id || feature.image.asset?._ref || feature.image.asset?._id
-                      }
-                      hotspot={feature.image.hotspot}
-                      crop={feature.image.crop}
-                      className="w-full h-full object-contain"
-                      alt={feature.title || ''}
-                      width={80}
-                      queryParams={{q: 80}}
-                    />
-                  </div>
-                )}
-                {feature.title && (
-                  <h3 className="text-xl lg:text-2xl font-sans font-medium text-text-primary mb-2">
-                    {feature.title}
-                  </h3>
-                )}
-                {feature.description && (
-                  <p className="text-base font-sans w-[95%] md:w-[80%] text-text-secondary leading-relaxed">
-                    {feature.description}
-                  </p>
-                )}
+                <FadeIn delay={index * 0.1}>
+                  {feature.image && (
+                    <div className="mb-3 size-7 relative">
+                      <Image
+                        id={
+                          feature.image._id || feature.image.asset?._ref || feature.image.asset?._id
+                        }
+                        hotspot={feature.image.hotspot}
+                        crop={feature.image.crop}
+                        className="w-full h-full object-contain"
+                        alt={feature.title || ''}
+                        width={80}
+                        queryParams={{q: 80}}
+                      />
+                    </div>
+                  )}
+                  {feature.title && (
+                    <h3 className="text-xl lg:text-2xl font-sans font-medium text-text-primary mb-2">
+                      {feature.title}
+                    </h3>
+                  )}
+                  {feature.description && (
+                    <p className="text-base font-sans w-[95%] md:w-[80%] text-text-secondary leading-relaxed">
+                      {feature.description}
+                    </p>
+                  )}
+                </FadeIn>
               </div>
             )
           })}

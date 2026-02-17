@@ -40,6 +40,14 @@ export type SanityImageAssetReference = {
   [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
 }
 
+export type ObjectImage = {
+  asset?: SanityImageAssetReference
+  media?: unknown // Unable to locate the referenced type "object.image.media" in schema
+  hotspot?: SanityImageHotspot
+  crop?: SanityImageCrop
+  _type: 'image'
+}
+
 export type LeftColumnImage = {
   asset?: SanityImageAssetReference
   media?: unknown // Unable to locate the referenced type "leftColumn.image.media" in schema
@@ -119,6 +127,7 @@ export type FeatureGrid = {
     title: string
     description?: string
     icon?: string
+    image?: ObjectImage
     _key: string
   }>
   columns?: 2 | 3
@@ -761,6 +770,7 @@ export type AllSanitySchemaTypes =
   | LeftColumn
   | RightColumn
   | SanityImageAssetReference
+  | ObjectImage
   | LeftColumnImage
   | RightColumnImage
   | FaqReference
@@ -863,7 +873,7 @@ export type SettingsQueryResult = {
 
 // Source: sanity/lib/queries.ts
 // Variable: getPageQuery
-// Query: *[_type == 'page' && slug.current == $slug][0]{    _id,    _type,    name,    slug,    heading,    subheading,      "pageBuilder": pageBuilder[]{    ...,    _type == "callToAction" => {      ...,        button {    ...,      link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current,    "service": service->slug.current  }      }  }    },    _type == "infoSection" => {      content[]{        ...,        markDefs[]{          ...,            _type == "link" => {    "page": page->slug.current,    "post": post->slug.current,    "service": service->slug.current  }        }      }    },    _type == "hero" => {      ...,        cta {    ...,      link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current,    "service": service->slug.current  }      }  }    },    _type == "servicesAccordion" => {      ...,      services[]->{        _id,        title,        "slug": slug.current,        "description": excerpt,        priceLabel,        "image": coverImage,          cta {    ...,      link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current,    "service": service->slug.current  }      }  }      }    },    _type == "statsBar" => {      ...    },    _type == "splitFeature" => {      ...,        cta {    ...,      link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current,    "service": service->slug.current  }      }  }    },    _type == "featureGrid" => {      ...    },    _type == "testimonialCarousel" => {      ...,      testimonials[]->{        _id,        quote,        authorName,        authorDescription      }    },    _type == "ctaBanner" => {      ...,        cta {    ...,      link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current,    "service": service->slug.current  }      }  }    },    _type == "twoColumnSection" => {      ...,      rightColumn {        ...,          cta {    ...,      link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current,    "service": service->slug.current  }      }  }      }    },    _type == "faqAccordion" => {      ...,      faqs[]->{        _id,        question,        answer      }    },  }  }
+// Query: *[_type == 'page' && slug.current == $slug][0]{    _id,    _type,    name,    slug,    heading,    subheading,      "pageBuilder": pageBuilder[]{    ...,    _type == "callToAction" => {      ...,        button {    ...,      link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current,    "service": service->slug.current  }      }  }    },    _type == "infoSection" => {      content[]{        ...,        markDefs[]{          ...,            _type == "link" => {    "page": page->slug.current,    "post": post->slug.current,    "service": service->slug.current  }        }      }    },    _type == "hero" => {      ...,        cta {    ...,      link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current,    "service": service->slug.current  }      }  }    },    _type == "servicesAccordion" => {      ...,      services[]->{        _id,        title,        "slug": slug.current,        "description": excerpt,        priceLabel,        "image": coverImage,          cta {    ...,      link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current,    "service": service->slug.current  }      }  }      }    },    _type == "statsBar" => {      ...    },    _type == "splitFeature" => {      ...,        cta {    ...,      link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current,    "service": service->slug.current  }      }  }    },    _type == "featureGrid" => {      ...,      features[]{        ...,        image {          ...,          asset->        }      }    },    _type == "testimonialCarousel" => {      ...,      testimonials[]->{        _id,        quote,        authorName,        authorDescription      }    },    _type == "ctaBanner" => {      ...,        cta {    ...,      link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current,    "service": service->slug.current  }      }  }    },    _type == "twoColumnSection" => {      ...,      rightColumn {        ...,          cta {    ...,      link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current,    "service": service->slug.current  }      }  }      }    },    _type == "faqAccordion" => {      ...,      faqs[]->{        _id,        question,        answer      }    },  }  }
 export type GetPageQueryResult = {
   _id: string
   _type: 'page'
@@ -946,6 +956,34 @@ export type GetPageQueryResult = {
           title: string
           description?: string
           icon?: string
+          image: {
+            asset: {
+              _id: string
+              _type: 'sanity.imageAsset'
+              _createdAt: string
+              _updatedAt: string
+              _rev: string
+              originalFilename?: string
+              label?: string
+              title?: string
+              description?: string
+              altText?: string
+              sha1hash?: string
+              extension?: string
+              mimeType?: string
+              size?: number
+              assetId?: string
+              uploadId?: string
+              path?: string
+              url?: string
+              metadata?: SanityImageMetadata
+              source?: SanityAssetSourceData
+            } | null
+            media?: unknown // Unable to locate the referenced type "object.image.media" in schema
+            hotspot?: SanityImageHotspot
+            crop?: SanityImageCrop
+            _type: 'image'
+          } | null
           _key: string
         }>
         columns?: 2 | 3
@@ -1299,7 +1337,7 @@ export type ServicePagesSlugsResult = Array<{
 
 // Source: sanity/lib/queries.ts
 // Variable: getServiceQuery
-// Query: *[_type == 'service' && slug.current == $slug][0]{    _id,    _type,    title,    slug,    excerpt,    coverImage,      "pageBuilder": pageBuilder[]{    ...,    _type == "callToAction" => {      ...,        button {    ...,      link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current,    "service": service->slug.current  }      }  }    },    _type == "infoSection" => {      content[]{        ...,        markDefs[]{          ...,            _type == "link" => {    "page": page->slug.current,    "post": post->slug.current,    "service": service->slug.current  }        }      }    },    _type == "hero" => {      ...,        cta {    ...,      link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current,    "service": service->slug.current  }      }  }    },    _type == "servicesAccordion" => {      ...,      services[]->{        _id,        title,        "slug": slug.current,        "description": excerpt,        priceLabel,        "image": coverImage,          cta {    ...,      link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current,    "service": service->slug.current  }      }  }      }    },    _type == "statsBar" => {      ...    },    _type == "splitFeature" => {      ...,        cta {    ...,      link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current,    "service": service->slug.current  }      }  }    },    _type == "featureGrid" => {      ...    },    _type == "testimonialCarousel" => {      ...,      testimonials[]->{        _id,        quote,        authorName,        authorDescription      }    },    _type == "ctaBanner" => {      ...,        cta {    ...,      link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current,    "service": service->slug.current  }      }  }    },    _type == "twoColumnSection" => {      ...,      rightColumn {        ...,          cta {    ...,      link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current,    "service": service->slug.current  }      }  }      }    },    _type == "faqAccordion" => {      ...,      faqs[]->{        _id,        question,        answer      }    },  }  }
+// Query: *[_type == 'service' && slug.current == $slug][0]{    _id,    _type,    title,    slug,    excerpt,    coverImage,      "pageBuilder": pageBuilder[]{    ...,    _type == "callToAction" => {      ...,        button {    ...,      link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current,    "service": service->slug.current  }      }  }    },    _type == "infoSection" => {      content[]{        ...,        markDefs[]{          ...,            _type == "link" => {    "page": page->slug.current,    "post": post->slug.current,    "service": service->slug.current  }        }      }    },    _type == "hero" => {      ...,        cta {    ...,      link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current,    "service": service->slug.current  }      }  }    },    _type == "servicesAccordion" => {      ...,      services[]->{        _id,        title,        "slug": slug.current,        "description": excerpt,        priceLabel,        "image": coverImage,          cta {    ...,      link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current,    "service": service->slug.current  }      }  }      }    },    _type == "statsBar" => {      ...    },    _type == "splitFeature" => {      ...,        cta {    ...,      link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current,    "service": service->slug.current  }      }  }    },    _type == "featureGrid" => {      ...,      features[]{        ...,        image {          ...,          asset->        }      }    },    _type == "testimonialCarousel" => {      ...,      testimonials[]->{        _id,        quote,        authorName,        authorDescription      }    },    _type == "ctaBanner" => {      ...,        cta {    ...,      link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current,    "service": service->slug.current  }      }  }    },    _type == "twoColumnSection" => {      ...,      rightColumn {        ...,          cta {    ...,      link {      ...,        _type == "link" => {    "page": page->slug.current,    "post": post->slug.current,    "service": service->slug.current  }      }  }      }    },    _type == "faqAccordion" => {      ...,      faqs[]->{        _id,        question,        answer      }    },  }  }
 export type GetServiceQueryResult = {
   _id: string
   _type: 'service'
@@ -1389,6 +1427,34 @@ export type GetServiceQueryResult = {
           title: string
           description?: string
           icon?: string
+          image: {
+            asset: {
+              _id: string
+              _type: 'sanity.imageAsset'
+              _createdAt: string
+              _updatedAt: string
+              _rev: string
+              originalFilename?: string
+              label?: string
+              title?: string
+              description?: string
+              altText?: string
+              sha1hash?: string
+              extension?: string
+              mimeType?: string
+              size?: number
+              assetId?: string
+              uploadId?: string
+              path?: string
+              url?: string
+              metadata?: SanityImageMetadata
+              source?: SanityAssetSourceData
+            } | null
+            media?: unknown // Unable to locate the referenced type "object.image.media" in schema
+            hotspot?: SanityImageHotspot
+            crop?: SanityImageCrop
+            _type: 'image'
+          } | null
           _key: string
         }>
         columns?: 2 | 3
@@ -1578,7 +1644,7 @@ import '@sanity/client'
 declare module '@sanity/client' {
   interface SanityQueries {
     '*[_type == "settings"][0]': SettingsQueryResult
-    '\n  *[_type == \'page\' && slug.current == $slug][0]{\n    _id,\n    _type,\n    name,\n    slug,\n    heading,\n    subheading,\n    \n  "pageBuilder": pageBuilder[]{\n    ...,\n    _type == "callToAction" => {\n      ...,\n      \n  button {\n    ...,\n    \n  link {\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current,\n    "service": service->slug.current\n  }\n\n      }\n\n  }\n\n    },\n    _type == "infoSection" => {\n      content[]{\n        ...,\n        markDefs[]{\n          ...,\n          \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current,\n    "service": service->slug.current\n  }\n\n        }\n      }\n    },\n    _type == "hero" => {\n      ...,\n      \n  cta {\n    ...,\n    \n  link {\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current,\n    "service": service->slug.current\n  }\n\n      }\n\n  }\n\n    },\n    _type == "servicesAccordion" => {\n      ...,\n      services[]->{\n        _id,\n        title,\n        "slug": slug.current,\n        "description": excerpt,\n        priceLabel,\n        "image": coverImage,\n        \n  cta {\n    ...,\n    \n  link {\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current,\n    "service": service->slug.current\n  }\n\n      }\n\n  }\n\n      }\n    },\n    _type == "statsBar" => {\n      ...\n    },\n    _type == "splitFeature" => {\n      ...,\n      \n  cta {\n    ...,\n    \n  link {\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current,\n    "service": service->slug.current\n  }\n\n      }\n\n  }\n\n    },\n    _type == "featureGrid" => {\n      ...\n    },\n    _type == "testimonialCarousel" => {\n      ...,\n      testimonials[]->{\n        _id,\n        quote,\n        authorName,\n        authorDescription\n      }\n    },\n    _type == "ctaBanner" => {\n      ...,\n      \n  cta {\n    ...,\n    \n  link {\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current,\n    "service": service->slug.current\n  }\n\n      }\n\n  }\n\n    },\n    _type == "twoColumnSection" => {\n      ...,\n      rightColumn {\n        ...,\n        \n  cta {\n    ...,\n    \n  link {\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current,\n    "service": service->slug.current\n  }\n\n      }\n\n  }\n\n      }\n    },\n    _type == "faqAccordion" => {\n      ...,\n      faqs[]->{\n        _id,\n        question,\n        answer\n      }\n    },\n  }\n\n  }\n': GetPageQueryResult
+    '\n  *[_type == \'page\' && slug.current == $slug][0]{\n    _id,\n    _type,\n    name,\n    slug,\n    heading,\n    subheading,\n    \n  "pageBuilder": pageBuilder[]{\n    ...,\n    _type == "callToAction" => {\n      ...,\n      \n  button {\n    ...,\n    \n  link {\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current,\n    "service": service->slug.current\n  }\n\n      }\n\n  }\n\n    },\n    _type == "infoSection" => {\n      content[]{\n        ...,\n        markDefs[]{\n          ...,\n          \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current,\n    "service": service->slug.current\n  }\n\n        }\n      }\n    },\n    _type == "hero" => {\n      ...,\n      \n  cta {\n    ...,\n    \n  link {\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current,\n    "service": service->slug.current\n  }\n\n      }\n\n  }\n\n    },\n    _type == "servicesAccordion" => {\n      ...,\n      services[]->{\n        _id,\n        title,\n        "slug": slug.current,\n        "description": excerpt,\n        priceLabel,\n        "image": coverImage,\n        \n  cta {\n    ...,\n    \n  link {\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current,\n    "service": service->slug.current\n  }\n\n      }\n\n  }\n\n      }\n    },\n    _type == "statsBar" => {\n      ...\n    },\n    _type == "splitFeature" => {\n      ...,\n      \n  cta {\n    ...,\n    \n  link {\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current,\n    "service": service->slug.current\n  }\n\n      }\n\n  }\n\n    },\n    _type == "featureGrid" => {\n      ...,\n      features[]{\n        ...,\n        image {\n          ...,\n          asset->\n        }\n      }\n    },\n    _type == "testimonialCarousel" => {\n      ...,\n      testimonials[]->{\n        _id,\n        quote,\n        authorName,\n        authorDescription\n      }\n    },\n    _type == "ctaBanner" => {\n      ...,\n      \n  cta {\n    ...,\n    \n  link {\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current,\n    "service": service->slug.current\n  }\n\n      }\n\n  }\n\n    },\n    _type == "twoColumnSection" => {\n      ...,\n      rightColumn {\n        ...,\n        \n  cta {\n    ...,\n    \n  link {\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current,\n    "service": service->slug.current\n  }\n\n      }\n\n  }\n\n      }\n    },\n    _type == "faqAccordion" => {\n      ...,\n      faqs[]->{\n        _id,\n        question,\n        answer\n      }\n    },\n  }\n\n  }\n': GetPageQueryResult
     '\n  *[_type == "page" || _type == "post" && defined(slug.current)] | order(_type asc) {\n    "slug": slug.current,\n    _type,\n    _updatedAt,\n  }\n': SitemapDataResult
     '\n  *[_type == "post" && defined(slug.current)] | order(date desc, _updatedAt desc) {\n    \n  _id,\n  "status": select(_originalId in path("drafts.**") => "draft", "published"),\n  "title": coalesce(title, "Untitled"),\n  "slug": slug.current,\n  excerpt,\n  coverImage,\n  "date": coalesce(date, _updatedAt),\n  "author": author->{firstName, lastName, picture},\n\n  }\n': AllPostsQueryResult
     '\n  *[_type == "post" && _id != $skip && defined(slug.current)] | order(date desc, _updatedAt desc) [0...$limit] {\n    \n  _id,\n  "status": select(_originalId in path("drafts.**") => "draft", "published"),\n  "title": coalesce(title, "Untitled"),\n  "slug": slug.current,\n  excerpt,\n  coverImage,\n  "date": coalesce(date, _updatedAt),\n  "author": author->{firstName, lastName, picture},\n\n  }\n': MorePostsQueryResult
@@ -1586,6 +1652,6 @@ declare module '@sanity/client' {
     '\n  *[_type == "post" && defined(slug.current)]\n  {"slug": slug.current}\n': PostPagesSlugsResult
     '\n  *[_type == "page" && defined(slug.current)]\n  {"slug": slug.current}\n': PagesSlugsResult
     '\n  *[_type == "service" && defined(slug.current)]\n  {"slug": slug.current}\n': ServicePagesSlugsResult
-    '\n  *[_type == \'service\' && slug.current == $slug][0]{\n    _id,\n    _type,\n    title,\n    slug,\n    excerpt,\n    coverImage,\n    \n  "pageBuilder": pageBuilder[]{\n    ...,\n    _type == "callToAction" => {\n      ...,\n      \n  button {\n    ...,\n    \n  link {\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current,\n    "service": service->slug.current\n  }\n\n      }\n\n  }\n\n    },\n    _type == "infoSection" => {\n      content[]{\n        ...,\n        markDefs[]{\n          ...,\n          \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current,\n    "service": service->slug.current\n  }\n\n        }\n      }\n    },\n    _type == "hero" => {\n      ...,\n      \n  cta {\n    ...,\n    \n  link {\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current,\n    "service": service->slug.current\n  }\n\n      }\n\n  }\n\n    },\n    _type == "servicesAccordion" => {\n      ...,\n      services[]->{\n        _id,\n        title,\n        "slug": slug.current,\n        "description": excerpt,\n        priceLabel,\n        "image": coverImage,\n        \n  cta {\n    ...,\n    \n  link {\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current,\n    "service": service->slug.current\n  }\n\n      }\n\n  }\n\n      }\n    },\n    _type == "statsBar" => {\n      ...\n    },\n    _type == "splitFeature" => {\n      ...,\n      \n  cta {\n    ...,\n    \n  link {\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current,\n    "service": service->slug.current\n  }\n\n      }\n\n  }\n\n    },\n    _type == "featureGrid" => {\n      ...\n    },\n    _type == "testimonialCarousel" => {\n      ...,\n      testimonials[]->{\n        _id,\n        quote,\n        authorName,\n        authorDescription\n      }\n    },\n    _type == "ctaBanner" => {\n      ...,\n      \n  cta {\n    ...,\n    \n  link {\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current,\n    "service": service->slug.current\n  }\n\n      }\n\n  }\n\n    },\n    _type == "twoColumnSection" => {\n      ...,\n      rightColumn {\n        ...,\n        \n  cta {\n    ...,\n    \n  link {\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current,\n    "service": service->slug.current\n  }\n\n      }\n\n  }\n\n      }\n    },\n    _type == "faqAccordion" => {\n      ...,\n      faqs[]->{\n        _id,\n        question,\n        answer\n      }\n    },\n  }\n\n  }\n': GetServiceQueryResult
+    '\n  *[_type == \'service\' && slug.current == $slug][0]{\n    _id,\n    _type,\n    title,\n    slug,\n    excerpt,\n    coverImage,\n    \n  "pageBuilder": pageBuilder[]{\n    ...,\n    _type == "callToAction" => {\n      ...,\n      \n  button {\n    ...,\n    \n  link {\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current,\n    "service": service->slug.current\n  }\n\n      }\n\n  }\n\n    },\n    _type == "infoSection" => {\n      content[]{\n        ...,\n        markDefs[]{\n          ...,\n          \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current,\n    "service": service->slug.current\n  }\n\n        }\n      }\n    },\n    _type == "hero" => {\n      ...,\n      \n  cta {\n    ...,\n    \n  link {\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current,\n    "service": service->slug.current\n  }\n\n      }\n\n  }\n\n    },\n    _type == "servicesAccordion" => {\n      ...,\n      services[]->{\n        _id,\n        title,\n        "slug": slug.current,\n        "description": excerpt,\n        priceLabel,\n        "image": coverImage,\n        \n  cta {\n    ...,\n    \n  link {\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current,\n    "service": service->slug.current\n  }\n\n      }\n\n  }\n\n      }\n    },\n    _type == "statsBar" => {\n      ...\n    },\n    _type == "splitFeature" => {\n      ...,\n      \n  cta {\n    ...,\n    \n  link {\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current,\n    "service": service->slug.current\n  }\n\n      }\n\n  }\n\n    },\n    _type == "featureGrid" => {\n      ...,\n      features[]{\n        ...,\n        image {\n          ...,\n          asset->\n        }\n      }\n    },\n    _type == "testimonialCarousel" => {\n      ...,\n      testimonials[]->{\n        _id,\n        quote,\n        authorName,\n        authorDescription\n      }\n    },\n    _type == "ctaBanner" => {\n      ...,\n      \n  cta {\n    ...,\n    \n  link {\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current,\n    "service": service->slug.current\n  }\n\n      }\n\n  }\n\n    },\n    _type == "twoColumnSection" => {\n      ...,\n      rightColumn {\n        ...,\n        \n  cta {\n    ...,\n    \n  link {\n      ...,\n      \n  _type == "link" => {\n    "page": page->slug.current,\n    "post": post->slug.current,\n    "service": service->slug.current\n  }\n\n      }\n\n  }\n\n      }\n    },\n    _type == "faqAccordion" => {\n      ...,\n      faqs[]->{\n        _id,\n        question,\n        answer\n      }\n    },\n  }\n\n  }\n': GetServiceQueryResult
   }
 }
