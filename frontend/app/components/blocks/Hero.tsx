@@ -1,5 +1,6 @@
 import Image from '@/app/components/SanityImage'
 import Button from '@/app/components/ui/Button'
+import {FadeIn} from '@/app/components/ui/FadeIn'
 import {linkResolver} from '@/sanity/lib/utils'
 
 interface HeroProps {
@@ -14,13 +15,6 @@ interface HeroProps {
 
 export default function Hero({block}: HeroProps) {
   const {headline, subtext, backgroundImage, cta, overlay = 'light'} = block
-
-  const overlayClass =
-    overlay === 'dark'
-      ? 'bg-gradient-to-t from-black/60 via-black/20 to-transparent'
-      : overlay === 'light'
-        ? 'bg-gradient-to-t from-black/40 via-black/10 to-transparent'
-        : ''
 
   const ctaHref = cta?.link ? linkResolver(cta.link) : null
 
@@ -39,24 +33,30 @@ export default function Hero({block}: HeroProps) {
         />
       )}
 
-      {/* {overlayClass && <div className={`absolute inset-0 ${overlayClass}`} />} */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
 
       <div className="relative container pb-16 lg:pb-24">
         <div className="max-w-xl flex flex-col items-center pt-[7vh] lg:max-w-2xl">
           {headline && (
-            <h1 className="text-5xl sm:text-6xl md:text-7xl font-serif text-center font-normal text-text-inverse leading-[1.1] tracking-tight mb-6">
-              {headline}
-            </h1>
+            <FadeIn>
+              <h1 className="text-5xl sm:text-6xl md:text-7xl font-serif text-center font-normal text-text-inverse leading-[1.1] tracking-tight mb-6">
+                {headline}
+              </h1>
+            </FadeIn>
           )}
           {subtext && (
-            <p className="text-lg lg:text-xl text-center font-sans font-normal md:max-w-xl text-text-inverse leading-relaxed mb-8 ">
-              {subtext}
-            </p>
+            <FadeIn delay={0.1}>
+              <p className="text-lg lg:text-xl text-center font-sans font-normal md:max-w-xl text-text-inverse leading-relaxed mb-8 ">
+                {subtext}
+              </p>
+            </FadeIn>
           )}
           {cta?.buttonText && ctaHref && (
-            <Button href={ctaHref} variant="secondary">
-              {cta.buttonText}
-            </Button>
+            <FadeIn delay={0.2}>
+              <Button href={ctaHref} variant="secondary">
+                {cta.buttonText}
+              </Button>
+            </FadeIn>
           )}
         </div>
       </div>

@@ -1,6 +1,7 @@
 'use client'
 
 import {useCallback, useEffect, useRef, useState} from 'react'
+import {FadeIn} from '@/app/components/ui/FadeIn'
 
 const AUTO_PLAY_MS = 7000
 
@@ -80,56 +81,66 @@ export default function TestimonialCarousel({block}: TestimonialCarouselProps) {
 
   return (
     <section
-      className="bg-brand-blue/[0.08] py-section-lg overflow-hidden"
+      className="pb-16 md:py-section-lg overflow-hidden"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
       <div className="container flex flex-col items-center">
         {/* Decorative quotation marks */}
-        <div className="mb-10" aria-hidden="true">
-          <svg width="120" height="90" viewBox="0 0 120 90" fill="none" className="text-brand-blue">
-            <path
-              d="M8 90V58C8 38 16 22 36 10L42 18C30 26 24 38 22 50H36C44.8 50 52 57.2 52 66V82C52 86.4 48.4 90 44 90H8Z"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              fill="currentColor"
-            />
-            <path
-              d="M68 90V58C68 38 76 22 96 10L102 18C90 26 84 38 82 50H96C104.8 50 112 57.2 112 66V82C112 86.4 108.4 90 104 90H68Z"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              fill="currentColor"
-            />
-          </svg>
-        </div>
+        <FadeIn>
+          <div className="mb-10" aria-hidden="true">
+            <svg
+              width="120"
+              height="90"
+              viewBox="0 0 120 90"
+              fill="none"
+              className="text-brand-blue"
+            >
+              <path
+                d="M8 90V58C8 38 16 22 36 10L42 18C30 26 24 38 22 50H36C44.8 50 52 57.2 52 66V82C52 86.4 48.4 90 44 90H8Z"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                fill="currentColor"
+              />
+              <path
+                d="M68 90V58C68 38 76 22 96 10L102 18C90 26 84 38 82 50H96C104.8 50 112 57.2 112 66V82C112 86.4 108.4 90 104 90H68Z"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                fill="currentColor"
+              />
+            </svg>
+          </div>
+        </FadeIn>
 
         {/* Quote and author — animated region */}
-        <div className="relative w-full max-w-4xl min-h-[200px] flex flex-col items-center justify-center">
-          <div
-            className="flex flex-col items-center transition-all duration-400 ease-out"
-            style={{
-              opacity: isAnimating ? 0 : 1,
-              transform: isAnimating
-                ? `translateY(${direction === 'right' ? '16px' : '-16px'})`
-                : 'translateY(0)',
-            }}
-          >
-            {current?.quote && (
-              <blockquote className="text-center mb-8">
-                <p className="text-xl sm:text-2xl lg:text-[28px] xl:text-[32px] font-serif font-normal text-text-primary leading-snug">
-                  {current.quote}
-                </p>
-              </blockquote>
-            )}
+        <FadeIn delay={0.1}>
+          <div className="relative w-full max-w-4xl min-h-[200px] flex flex-col items-center justify-center">
+            <div
+              className="flex flex-col items-center transition-all duration-400 ease-out"
+              style={{
+                opacity: isAnimating ? 0 : 1,
+                transform: isAnimating
+                  ? `translateY(${direction === 'right' ? '16px' : '-16px'})`
+                  : 'translateY(0)',
+              }}
+            >
+              {current?.quote && (
+                <blockquote className="text-center mb-8">
+                  <p className="text-xl sm:text-2xl lg:text-[28px] xl:text-[32px] font-serif font-normal text-text-primary leading-snug">
+                    {current.quote}
+                  </p>
+                </blockquote>
+              )}
 
-            {current?.authorName && (
-              <p className="text-xs sm:text-sm font-medium font-sans text-brand-blue tracking-[0.1em] uppercase  text-center">
-                {current.authorName}
-                {current.authorDescription && `, ${current.authorDescription}`}
-              </p>
-            )}
+              {current?.authorName && (
+                <p className="text-xs sm:text-sm font-medium font-sans text-brand-blue t  text-center">
+                  {current.authorName}
+                  {current.authorDescription && `, ${current.authorDescription}`}
+                </p>
+              )}
+            </div>
           </div>
-        </div>
+        </FadeIn>
 
         {/* Progress indicators */}
         {total > 1 && (

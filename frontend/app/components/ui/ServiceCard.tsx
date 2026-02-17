@@ -34,24 +34,22 @@ export default function ServiceCard({
             width={600}
             queryParams={{q: 80}}
           />
-          <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/60 to-transparent" />
-          <div className="absolute inset-x-0 bottom-0 p-5  flex-col-reverse flex items-start gap-2">
+          <div className="absolute inset-x-0 bottom-0 h-full bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 p-5  flex-col flex items-start gap-2">
             {priceLabel && (
               <span className="bg-white/20 text-white text-xs md:text-sm font-sans font-medium rounded-full px-3 py-1.5 whitespace-nowrap backdrop-blur-sm">
                 {priceLabel}
               </span>
             )}
             {title && (
-              <h3 className="text-xl md:text-2xl lg:text-3xl font-serif font-normal text-white">
-                {title}
-              </h3>
+              <h3 className="text-3xl lg:text-4xl font-serif font-normal text-white">{title}</h3>
             )}
           </div>
         </div>
       )}
       <div className="flex flex-col flex-1 p-5">
         {description && (
-          <p className="text-sm lg:text-base font-sans text-text-secondary leading-relaxed mb-2 flex-1">
+          <p className="text-lg font-sans text-text-secondary leading-relaxed mb-4 flex-1">
             {description}
           </p>
         )}
